@@ -18,8 +18,7 @@ jobs:
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: './'   # Cartella da copiare (con ./ copia tutto il repository)
-        server-dir: '/' # Cartella del server in cui fa la copia
-
+          server-dir: '/' # Cartella del server in cui fa la copia. Cambia con il nome della tua cartella
           protocol: 'ftp'
           port: 21
           security: 'loose'
