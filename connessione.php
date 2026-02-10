@@ -3,7 +3,7 @@
   $host = "localhost";
   $username = "chefly"; // <--- INSERISCI QUI IL TUO NOME UTENTE ALTERVISTA = nomeprogetto
   $password = "";            // <--- SU ALTERVISTA LASCIA VUOTO (o metti la pass del pannello se l'hai cambiata)
-  $database = "my_cheflyi"; // <--- SCRIVI my_ SEGUITO DAL TUO NOME UTENTE
+  $database = "my_chefly"; // <--- SCRIVI my_ SEGUITO DAL TUO NOME UTENTE
 
   // Creiamo la connessione
   $conn = new mysqli($host, $username, $password, $database);
