@@ -17,4 +17,5 @@
 
   // Impostiamo la codifica caratteri corretta
   $conn->set_charset("utf8");
+
 ?>
