@@ -2,27 +2,7 @@
 include "../include/inizio.php";
 ?>
 
-    <style>
-        body {
-            background-color: #f8f9fa;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
 
-        .card {
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            width: 100%;
-            max-width: 420px; /* larghezza massima del form */
-            padding: 30px;
-        }
-
-        h2 {
-            color: #0d6efd;
-        }
-    </style>
 
     <div class="card">
         <h2 class="text-center mb-4">Inserimento nuovo utente</h2>
@@ -69,6 +49,8 @@ include "../include/inizio.php";
             <button type="submit" class="btn btn-primary w-100">Invia</button>
         </form>
     </div>
+
+    <link href="../css/signUp.css" rel="stylesheet">
 
 <?php
 include "../include/fine.php";

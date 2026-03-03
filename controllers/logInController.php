@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $password = $_POST['password'];
 
     if (!$mail || empty($password)) {
-        header("Location: login.php?error=Email o password mancanti");
+        header("Location: ../views/login.php?error=Email o password mancanti");
         exit;
     }
 
@@ -35,16 +35,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $_SESSION['user_cognome'] = $cognome;
             $_SESSION['user_ruolo'] = $idRuolo;
 
-            header("Location: index.php");
+            header("Location: ../index.php");
             exit;
         } else {
             // Password errata
-            header("Location: login.php?error=Password errata");
+            header("Location: ../views/login.php?error=Password errata");
             exit;
         }
     } else {
         // Utente non trovato
-        header("Location: login.php?error=Email non registrata");
+        header("Location: ../views/login.php?error=Email non registrata");
         exit;
     }
 
@@ -52,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     mysqli_close($conn);
 } else {
     // Accesso diretto al file non permesso
-    header("Location: login.php");
+    header("Location: ../views/login.php");
     exit;
 }
 ?>

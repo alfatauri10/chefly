@@ -21,5 +21,5 @@ include "include/inizio.php";
     </div>
 
 <?php
-include "../include/fine.php";
+include "include/fine.php";
 ?>

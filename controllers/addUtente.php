@@ -12,7 +12,7 @@ $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 $biografia = mysqli_real_escape_string($conn, $_POST['biografia']);
 
 // idTimer = 1, idLivello = 1, idRuolo = 0
-$stringaSql = "INSERT INTO utenti 
+$stringaSql = "INSERT INTO Utenti 
     (punteggioAttuale, nome, cognome, mail, password, biografia, idTimer, idLivello, idRuolo)
     VALUES ($punteggioAttuale,'$nome','$cognome','$mail','$password','$biografia',1,1,0)";
 

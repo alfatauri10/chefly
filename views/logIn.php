@@ -2,27 +2,6 @@
 include "../include/inizio.php";
 ?>
 
-    <style>
-        body {
-            background-color: #f8f9fa;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .card {
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            width: 100%;
-            max-width: 400px;
-            padding: 30px;
-        }
-
-        h2 {
-            color: #0d6efd;
-        }
-    </style>
 
     <div class="card">
         <h2 class="text-center mb-4">Accesso Utente</h2>
@@ -47,9 +26,10 @@ include "../include/inizio.php";
         </form>
 
         <div class="text-center mt-3">
-            <a href="signUp.php">Non hai un account? Registrati</a>
+            <a href="../views/signUp.php">Non hai un account? Registrati</a>
         </div>
     </div>
+    <link href="../css/logIn.css" rel="stylesheet">
 
 <?php
 include "../include/fine.php";
