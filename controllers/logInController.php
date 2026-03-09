@@ -15,7 +15,7 @@
     // se sono passato dalla LOGIN
     if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-        require_once "../include/connessione.php";
+        include "../include/connessione.php";
 
         /*
         * Controllo  connessione DB:
@@ -29,7 +29,7 @@
         $password = $_POST['password'];
 
         if (!$mail || empty($password)) {
-            header("Location: login.php?error=Email o password mancanti");
+            header("Location: logIn.php?error=Email o password mancanti");
             exit;
         }
 
@@ -51,14 +51,14 @@
                     $_SESSION['user_cognome'] = $cognome;
                     $_SESSION['user_ruolo'] = $idRuolo;
 
-                    header("Location: index.php");
+                    header("Location: ../index.php");
                     exit;
                 } else {
-                    header("Location: login.php?error=Password errata");
+                    header("Location: logIn.php?error=Password errata");
                     exit; // AGGIUNTO exit per fermare lo script
                 }
             } else {
-                header("Location: login.php?error=Email non registrata");
+                header("Location: logIn.php?error=Email non registrata");
                 exit; // AGGIUNTO exit per fermare lo script
             }
 
