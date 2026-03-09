@@ -67,7 +67,7 @@
         mysqli_close($conn);
 
     } else { //Forzo passaggio da login
-        header("Location: login.php");
+        header("Location: ../views/logIn.php");
     }
 
 
