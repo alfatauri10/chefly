@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// Controllo se utente loggato
+// Controllo se utente logated
 if (!isset($_SESSION['user_id'])) {
     header("Location: views/login.php");
     exit;
