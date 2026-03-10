@@ -1,7 +1,7 @@
 <?php
-$conn = mysqli_connect("localhost","chefly","","my_chefly");
+$conn = mysqli_connect("localhost","root","","my_chefly");
 
 if(!$conn){
-  die("Connessione fallitaa: " . mysqli_connect_error());
+    die("Connessione fallitaa: " . mysqli_connect_error());
 }
 ?>
