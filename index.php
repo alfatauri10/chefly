@@ -1,25 +1,32 @@
-<?php
-session_start();
+<?php session_start(); ?>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Chefly</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+<div class="container">
+    <h1>Ricette</h1>
+    <p class="subtitle">ricette</p>
 
-// Controllo se utente logated
-if (!isset($_SESSION['user_id'])) {
-    header("Location: view/login.php");
-    exit;
-}
+    <?php if (isset($_SESSION['user_id'])): ?>
+        <p>Bentornato in cucina, <b><?php echo htmlspecialchars($_SESSION['username']); ?></b></p>
+        <div class="button-group">
+            <a href="controller/logOutController.php" class="btn btn-logout">Esci</a>
+        </div>
+    <?php else: ?>
+        <p>Sei pronto per una nuova ricetta?</p>
+        <div class="button-group">
+            <a href="view/login.php" class="btn">Login</a>
+            <a href="view/signup.php" class="btn">Registrati</a>
+        </div>
+    <?php endif; ?>
 
-include "include/inizio.php";
-?>
-
-
-    <link href="css/index.css" rel="stylesheet">
-
-    <div class="card">
-        <h2>Benvenuto, <?php echo htmlspecialchars($_SESSION['user_nome']); ?>!</h2>
-        <p>Ciao <?php echo htmlspecialchars($_SESSION['user_nome'] . ' ' . $_SESSION['user_cognome']); ?>, sei loggato con ruolo ID <?php echo $_SESSION['user_ruolo']; ?>.</p>
-
-        <a href="controller/logOutController.php" class="btn btn-danger mt-3 w-100">Logout</a>
-    </div>
-
-<?php
-include "include/fine.php";
-?>
+    <?php if (isset($_GET['msg'])): ?>
+        <div class="message success">Bentornato nel club! Operazione riuscita.</div>
+    <?php endif; ?>
+</div>
+</body>
+</html>
