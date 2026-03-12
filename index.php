@@ -8,8 +8,8 @@
 </head>
 <body>
 <div class="container">
-    <h1>Ricette</h1>
-    <p class="subtitle">ricette</p>
+    <h1>CHEFLY</h1>
+    <p class="subtitle">ricette per tutti</p>
 
     <?php if (isset($_SESSION['user_id'])): ?>
         <p>Bentornato in cucina, <b><?php echo htmlspecialchars($_SESSION['username']); ?></b></p>
@@ -25,7 +25,11 @@
     <?php endif; ?>
 
     <?php if (isset($_GET['msg'])): ?>
+        <?php if ($_GET['msg']==='successLogin'): ?>
         <div class="message success">Bentornato nel club! Operazione riuscita.</div>
+        <?php elseif ($_GET['msg']==='successRegister'): ?>
+            <div class="message success">Benvenuto nel club, esegui il login ! .</div>
+        <?php endif; ?>
     <?php endif; ?>
 </div>
 </body>

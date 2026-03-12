@@ -14,8 +14,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['user_nome']    = $user['nome'];    // Aggiunto
         $_SESSION['user_cognome'] = $user['cognome']; // Aggiunto
         $_SESSION['user_ruolo']   = $user['idRuolo']; // Aggiunto (usa il nome esatto della colonna DB)
+        $_SESSION['username']   = $user['username']; // Aggiunto (usa il nome esatto della colonna DB)
 
-        header("Location: ../index.php");
+        header("Location: ../index.php?msg=successLogin");
         exit();
     }
     else {
