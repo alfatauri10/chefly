@@ -2,7 +2,7 @@
 session_start();
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-    header("Location: ../views/logIn.php");
+    header("Location: ../view/logIn.php");
     exit;
 }
 
@@ -12,7 +12,7 @@ $mail = filter_var($_POST['mail'], FILTER_VALIDATE_EMAIL);
 $password = $_POST['password'];
 
 if (!$mail || empty($password)) {
-    header("Location: ../views/logIn.php?error=Email o password mancanti");
+    header("Location: ../view/logIn.php?error=Email o password mancanti");
     exit;
 }
 
@@ -38,11 +38,11 @@ if (mysqli_stmt_num_rows($stmt) == 1) {
         exit;
 
     } else {
-        header("Location: ../views/logIn.php?error=Password errata");
+        header("Location: ../view/logIn.php?error=Password errata");
         exit;
     }
 
 } else {
-    header("Location: ../views/logIn.php?error=Email non registrata");
+    header("Location: ../view/logIn.php?error=Email non registrata");
     exit;
 }

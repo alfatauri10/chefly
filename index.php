@@ -3,7 +3,7 @@ session_start();
 
 // Controllo se utente logated
 if (!isset($_SESSION['user_id'])) {
-    header("Location: views/logIn.php");
+    header("Location: view/logIn.php");
     exit;
 }
 
@@ -17,7 +17,7 @@ include "include/inizio.php";
         <h2>Benvenuto, <?php echo htmlspecialchars($_SESSION['user_nome']); ?>!</h2>
         <p>Ciao <?php echo htmlspecialchars($_SESSION['user_nome'] . ' ' . $_SESSION['user_cognome']); ?>, sei loggato con ruolo ID <?php echo $_SESSION['user_ruolo']; ?>.</p>
 
-        <a href="controllers/logOutController.php" class="btn btn-danger mt-3 w-100">Logout</a>
+        <a href="controller/logOutController.php" class="btn btn-danger mt-3 w-100">Logout</a>
     </div>
 
 <?php

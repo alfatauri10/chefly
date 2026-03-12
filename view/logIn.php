@@ -13,7 +13,7 @@ include "../include/inizio.php";
         }
         ?>
 
-        <form action="../controllers/logInController.php" method="post">
+        <form action="../controller/logInController.php" method="post">
             <label class="form-label">Email</label>
             <input type="email" name="mail" class="form-control mb-3"
                    placeholder="inserisci la tua email" required>
@@ -26,7 +26,7 @@ include "../include/inizio.php";
         </form>
 
         <div class="text-center mt-3">
-            <a href="../views/signUp.php">Non hai un account? Registrati</a>
+            <a href="/signUp.php">Non hai un account? Registrati</a>
         </div>
     </div>
     <link href="../css/logIn.css" rel="stylesheet">

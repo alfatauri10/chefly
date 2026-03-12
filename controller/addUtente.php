@@ -17,7 +17,7 @@ $stringaSql = "INSERT INTO Utenti
     VALUES ($punteggioAttuale,'$nome','$cognome','$mail','$password','$biografia',1,1,1)";
 
 if (mysqli_query($conn, $stringaSql)) {
-    header("Location: ../views/logIn.php");
+    header("Location: ../view/logIn.php");
     exit;
 } else {
     echo "Errore: " . mysqli_error($conn);
