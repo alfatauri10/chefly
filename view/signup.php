@@ -54,7 +54,7 @@ include "../include/inizio.php";
         </form>
     </div>
 
-    <link href="../css/signUp.css" rel="stylesheet">
+    <link href="../css/signup.css" rel="stylesheet">
 
 <?php
 include "../include/fine.php";

@@ -27,10 +27,10 @@ include "../include/inizio.php";
         </form>
 
         <div class="text-center mt-3">
-            <a href="signUp.php">Non hai un account? Registrati</a>
+            <a href="signup.php">Non hai un account? Registrati</a>
         </div>
     </div>
-    <link href="../css/logIn.css" rel="stylesheet">
+    <link href="../css/login.css" rel="stylesheet">
 
 <?php
 include "../include/fine.php";
