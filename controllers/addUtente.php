@@ -14,7 +14,7 @@ $biografia = mysqli_real_escape_string($conn, $_POST['biografia']);
 // idTimer = 1, idLivello = 1, idRuolo = 0
 $stringaSql = "INSERT INTO Utenti 
     (punteggioAttuale, nome, cognome, mail, password, biografia, idTimer, idLivello, idRuolo)
-    VALUES ($punteggioAttuale,'$nome','$cognome','$mail','$password','$biografia',1,1,0)";
+    VALUES ($punteggioAttuale,'$nome','$cognome','$mail','$password','$biografia',1,1,1)";
 
 if (mysqli_query($conn, $stringaSql)) {
     header("Location: ../views/logIn.php");
