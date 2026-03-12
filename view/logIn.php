@@ -9,7 +9,8 @@ include "../include/inizio.php";
         <?php
         // messaggio di errore semplice (passato via GET)
         if (isset($_GET['error'])) {
-            echo '<div class="alert alert-danger">'.htmlspecialchars($_GET['error']).'</div>';
+            $msg = ($_GET['error'] == 1) ? "Email o password errati." : "Si è verificato un errore.";
+            echo '<div class="alert alert-danger">' . htmlspecialchars($msg) . '</div>';
         }
         ?>
 
@@ -26,7 +27,7 @@ include "../include/inizio.php";
         </form>
 
         <div class="text-center mt-3">
-            <a href="/signUp.php">Non hai un account? Registrati</a>
+            <a href="signUp.php">Non hai un account? Registrati</a>
         </div>
     </div>
     <link href="../css/logIn.css" rel="stylesheet">

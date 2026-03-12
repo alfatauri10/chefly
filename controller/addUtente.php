@@ -1,27 +1,17 @@
 <?php
-require_once "../include/connessione.php"; // prima includi la connessione
-global $conn;
+// controller/registrazioneController.php
+require_once '../include/connessione.php';
+require_once '../model/User.php';
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+    $res = registraUtente($conn, $_POST['nome'], $_POST['cognome'], $_POST['username'], $_POST['mail'], $_POST['password'], $_POST['biografia']);
 
-$punteggioAttuale = 0; // di default
-$nome = mysqli_real_escape_string($conn, $_POST['nome']);
-$cognome = mysqli_real_escape_string($conn, $_POST['cognome']);
-$mail = mysqli_real_escape_string($conn, $_POST['mail']);
-$password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-$biografia = mysqli_real_escape_string($conn, $_POST['biografia']);
-
-// idTimer = 1, idLivello = 1, idRuolo = 0
-$stringaSql = "INSERT INTO Utenti 
-    (punteggioAttuale, nome, cognome, mail, password, biografia, idTimer, idLivello, idRuolo)
-    VALUES ($punteggioAttuale,'$nome','$cognome','$mail','$password','$biografia',1,1,1)";
-
-if (mysqli_query($conn, $stringaSql)) {
-    header("Location: ../view/logIn.php");
-    exit;
-} else {
-    echo "Errore: " . mysqli_error($conn);
+    if ($res) {
+        header("Location: ../index.php?msg=success");
+        exit();
+    } else {
+        header("Location: ../view/registrazione.php?error=1");
+        exit();
+    }
 }
-
-mysqli_close($conn);
-?>

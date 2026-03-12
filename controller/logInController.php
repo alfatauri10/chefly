@@ -1,48 +1,27 @@
 <?php
+// controller/loginController.php
 session_start();
+require_once '../include/connessione.php';
+require_once '../model/user.php';
 
-if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-    header("Location: ../view/logIn.php");
-    exit;
-}
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $user = findUserByMail($conn, $_POST['mail']);
 
-include "../include/connessione.php";
-
-$mail = filter_var($_POST['mail'], FILTER_VALIDATE_EMAIL);
-$password = $_POST['password'];
-
-if (!$mail || empty($password)) {
-    header("Location: ../view/logIn.php?error=Email o password mancanti");
-    exit;
-}
-
-$stmt = mysqli_prepare($conn, "SELECT id, nome, cognome, password, idRuolo FROM Utenti WHERE mail = ?");
-
-mysqli_stmt_bind_param($stmt, "s", $mail);
-mysqli_stmt_execute($stmt);
-mysqli_stmt_store_result($stmt);
-
-if (mysqli_stmt_num_rows($stmt) == 1) {
-
-    mysqli_stmt_bind_result($stmt, $id, $nome, $cognome, $hashedPassword, $idRuolo);
-    mysqli_stmt_fetch($stmt);
-
-    if (password_verify($password, $hashedPassword)) {
-
-        $_SESSION['user_id'] = $id;
-        $_SESSION['user_nome'] = $nome;
-        $_SESSION['user_cognome'] = $cognome;
-        $_SESSION['user_ruolo'] = $idRuolo;
+    if ($user && password_verify($_POST['password'], $user['password'])) {
+        // Login OK: salviamo TUTTI i dati necessari in sessione
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['mail']    = $user['mail'];
+        $_SESSION['user_nome']    = $user['nome'];    // Aggiunto
+        $_SESSION['user_cognome'] = $user['cognome']; // Aggiunto
+        $_SESSION['user_ruolo']   = $user['idRuolo']; // Aggiunto (usa il nome esatto della colonna DB)
 
         header("Location: ../index.php");
-        exit;
-
-    } else {
-        header("Location: ../view/logIn.php?error=Password errata");
-        exit;
+        exit();
     }
-
-} else {
-    header("Location: ../view/logIn.php?error=Email non registrata");
-    exit;
+    else {
+        // Login Fallito
+        header("Location: ../view/login.php?error=1");
+        exit();
+    }
 }
+?>

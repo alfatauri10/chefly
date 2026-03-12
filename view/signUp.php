@@ -16,6 +16,10 @@ include "../include/inizio.php";
             <input type="text" name="nome" class="form-control mb-2"
                    placeholder="inserisci il nome" required>
 
+            <label class="form-label">Username</label>
+            <input type="text" name="username" class="form-control mb-2"
+                   placeholder="inserisci l'userName" required>
+
             <label class="form-label">Email</label>
             <input type="email" name="mail" class="form-control mb-2"
                    placeholder="inserisci l'email" required>
