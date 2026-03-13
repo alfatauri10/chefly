@@ -7,7 +7,7 @@ include "../include/inizio.php";
     <div class="card">
         <h2 class="text-center mb-4">Inserimento nuovo utente</h2>
 
-        <form action="../controller/addUtente.php" method="post">
+        <form action="../controller/singupController.php" method="post">
             <label class="form-label">Cognome</label>
             <input type="text" name="cognome" class="form-control mb-2"
                    placeholder="inserisci il cognome" required>

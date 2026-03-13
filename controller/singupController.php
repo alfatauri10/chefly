@@ -1,7 +1,7 @@
 <?php
 // controller/registrazioneController.php
 require_once '../include/connessione.php';
-require_once '../model/User.php';
+require_once '../model/user.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
