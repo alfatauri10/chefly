@@ -2,7 +2,13 @@
 include "../include/inizio.php";
 ?>
 
-
+    <?php if (isset($_GET['error'])): ?>
+        <?php if ($_GET['error']==='mail'): ?>
+            <div class="alert alert-danger">Utente gia registrato, esegui il <a href="login.php" class="btn">Login! </a></div>
+        <?php elseif ($_GET['error']==='username'): ?>
+            <div class="alert alert-danger">Username gia esistente!</div>
+        <?php endif; ?>
+    <?php endif; ?>
 
     <div class="card">
         <h2 class="text-center mb-4">Inserimento nuovo utente</h2>
