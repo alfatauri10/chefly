@@ -198,3 +198,50 @@ body{
     }
 
 }
+
+.profile-menu{
+    position:relative;
+}
+
+.profile-pic{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    cursor:pointer;
+}
+
+.dropdown-menu{
+    position:absolute;
+    top:50px;
+    right:0;
+
+    width:150px;
+
+    background:white;
+    border:1px solid #ddd;
+    border-radius:8px;
+
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+
+    display:none;
+}
+
+.dropdown-menu.show{
+    display:block;
+}
+
+.dropdown-username{
+    padding:10px;
+    font-weight:bold;
+}
+
+.dropdown-item{
+    display:block;
+    padding:10px;
+    text-decoration:none;
+    color:black;
+}
+
+.dropdown-item:hover{
+    background:#f5f5f5;
+}

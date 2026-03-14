@@ -14,10 +14,19 @@ include "../include/inizio.php";
         }
         ?>
 
+        <?php if(isset($_GET['msg']) && $_GET['msg'] === 'successRegister'): ?>
+            <div class="alert alert-success">Benvenuto nel club, esegui il login!</div>
+        <?php endif; ?>
+
         <form action="../controller/logInController.php" method="post">
             <label class="form-label">Email</label>
-            <input type="email" name="mail" class="form-control mb-3"
-                   placeholder="inserisci la tua email" required>
+            <input type="email"
+                   name="mail"
+                   class="form-control mb-3"
+                   placeholder="inserisci la tua email"
+                   value="<?php echo htmlspecialchars($_GET['mail'] ?? ''); ?>"
+                   required>
+
 
             <label class="form-label">Password</label>
             <input type="password" name="password" class="form-control mb-3"

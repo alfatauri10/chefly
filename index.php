@@ -15,21 +15,11 @@
 <?php include "include/header.php"; ?>
 
 <?php if (isset($_SESSION['user_id'])): ?>
-    <p>Bentornato in cucina, <b><?php echo htmlspecialchars($_SESSION['username']); ?></b></p>
-
-    <div class="button-group">
-        <a href="controller/logOutController.php" class="btn btn-logout">Esci</a>
-    </div>
+    <!-- codice se l'utente è loggato -->
 <?php endif; ?>
 
-<?php if (isset($_GET['msg'])): ?>
-    <?php if ($_GET['msg']==='successLogin'): ?>
-        <div class="message success">Bentornato nel club! Operazione riuscita.</div>
 
-    <?php elseif ($_GET['msg']==='successRegister'): ?>
-        <div class="message success">Benvenuto nel club, esegui il login!</div>
-    <?php endif; ?>
-<?php endif; ?>
 
-</body>
+<script> <?php include_once "js/dropDownMenu.js"?> </script>
+    </body>
 </html>

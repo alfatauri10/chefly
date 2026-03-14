@@ -21,13 +21,25 @@
 
         <?php if(isset($_SESSION['user_id'])): ?>
 
-            <a href="profilo.php">  <!-- TODO -->
-                <img src="img/fotoProfilo.jpg" class="profile-pic">
-            </a>
+            <div class="profile-menu">
 
-            <!--
-       senza spazio: < ?php echo $_SESSION['fotoProfilo']; ?> da ficcare dentro l'src
-    -->
+                <img src="img/fotoProfilo.jpg" class="profile-pic" id="profileToggle">
+
+                <div class="dropdown-menu" id="dropdownMenu">
+
+                    <div class="dropdown-username">
+                        <?php echo $_SESSION['username']; ?>
+                    </div>
+
+                    <hr>
+
+                    <a href="controller/logOutController.php" class="dropdown-item">
+                        Logout
+                    </a>
+
+                </div>
+
+            </div>
 
         <?php else: ?>
 

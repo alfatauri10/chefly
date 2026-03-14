@@ -8,7 +8,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $res = registraUtente($conn, $_POST['nome'], $_POST['cognome'], $_POST['username'], $_POST['mail'], $_POST['password'], $_POST['biografia']);
 
     if ($res == "success") {
-        header("Location: ../index.php?msg=successRegister");
+        $mail= $_POST['mail'];
+        header("Location: ../view/login.php?msg=successRegister&mail=$mail");
         exit();
     }elseif ($res == "email") {
         header("Location: ../view/signup.php?error=mail");
