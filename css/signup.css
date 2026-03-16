@@ -1,19 +1,150 @@
-body {
-    background-color: #f8f9fa;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.body-login{
+    font-family: 'Montserrat', sans-serif;
+    background:#f7f3ef;
 }
 
-.card {
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    width: 100%;
-    max-width: 420px; /* larghezza massima del form */
-    padding: 30px;
+.container-form{
+
+    background:white;
+
+    padding:50px;
+
+    border-radius:10px;
+
+    width:450px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,0.08);
+
 }
 
-h2 {
-    color: #0d6efd;
+.login-title{
+
+    font-weight:500;
+
+    letter-spacing:3px;
+
+    text-transform:uppercase;
+
+    color:#2d1b10;
+
+}
+
+.login-subtitle{
+
+    margin-bottom:30px;
+
+    color:#7a6c61;
+
+}
+
+.form-label-custom{
+
+    font-size:13px;
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+
+    font-weight:500;
+
+}
+
+.form-control-custom{
+
+    width:100%;
+
+    padding:10px;
+
+    border:none;
+
+    border-bottom:1px solid #ddd;
+
+    margin-bottom:20px;
+
+}
+
+.form-control-custom:focus{
+
+    outline:none;
+
+    border-bottom:1px solid #2d1b10;
+
+}
+
+textarea.form-control-custom{
+
+    resize:none;
+
+}
+
+.btn-login-action{
+
+    width:100%;
+
+    padding:12px;
+
+    border:none;
+
+    background:#2d1b10;
+
+    color:white;
+
+    letter-spacing:2px;
+
+    text-transform:uppercase;
+
+}
+
+.btn-login-action:hover{
+
+    background:#4a3327;
+
+}
+
+.gold-link{
+
+    color:#b08d57;
+
+    text-decoration:none;
+
+    font-weight:500;
+
+}
+
+.gold-link:hover{
+
+    text-decoration:underline;
+
+}
+
+.alert-login-error{
+
+    background:#f8d7da;
+
+    padding:10px;
+
+    border-radius:5px;
+
+    margin-bottom:20px;
+
+}
+
+.back-home-link{
+
+    display:block;
+
+    margin-top:10px;
+
+    font-size:14px;
+
+    color:#7a6c61;
+
+    text-decoration:none;
+
+}
+
+.back-home-link:hover{
+
+    text-decoration:underline;
+
 }
