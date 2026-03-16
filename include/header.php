@@ -1,7 +1,7 @@
 <header class="main-header">
 
     <div class="header-left">
-        <img src="img/logo.png" class="logo">
+        <img src="/img/logo.png" class="logo">
 
         <a href="index.php" class="site-title">
             Chefly
@@ -23,7 +23,7 @@
 
             <div class="profile-menu">
 
-                <img src="img/fotoProfilo.jpg" class="profile-pic" id="profileToggle">
+                <img src="<?php echo $_SESSION['fotoProfilo']; ?>" class="profile-pic" id="profileToggle">
 
                 <div class="dropdown-menu" id="dropdownMenu">
 
