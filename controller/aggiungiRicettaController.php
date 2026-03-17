@@ -1,40 +1,41 @@
 <?php
-// controller/aggiungiVinoController.php
-require_once '../include/connessione.php';
+// controller/aggiungiRicettaController.php
 require_once '../model/ricetta.php';
+require_once '../include/connessione.php'; // La tua connessione al DB
 
-// session_start() va SEMPRE all'inizio, prima di ogni logica
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
 // Recuperiamo l'ID dell'utente dalla sessione
 $id_utente = $_SESSION['user_id'] ?? null;
 
 if (!$id_utente) {
-    header("Location: ../view/login.php");
+    header("Location: login.php");
     exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nome = $_POST['nome_ricetta'] ?? ''; // todo: dipende dalla form = campo tabella db
-    $cantina = $_POST['cantina'] ?? '';
-    $immagine = $_FILES['immagine_vino'] ?? null;
+    // 1. Recupero dati testuali
+    $titolo = $_POST['titolo'] ?? '';
+    $descrizione = $_POST['descrizione'] ?? '';
+    $difficolta = $_POST['difficolta'] ?? '';
+    $id_nazionalita = $_POST['id_nazionalita'] ?? null;
+    $id_tipologia = $_POST['id_tipologia'] ?? null;
+    $dataCreazione = date('Y-m-d H:i:s');
 
-    // chiamo Vino Model che fa tutto (upload + DB)
-    $res = aggiungiRicetta($conn, $id_utente, $nome, $cantina, $immagine);
+    // 2. Recupero File
+    $file_copertina = $_FILES['copertina'] ?? null;
+    $altri_files = $_FILES['gallery'] ?? [];
 
-    if ($res) {
-        $_SESSION['messaggio'] = "Vino aggiunto con successo!";
-        header("Location: ../view/listaVini.php"); // Redirect al SUCCESSO
-        exit(); // FERMA TUTTO QUI
-    } else {
-        $_SESSION['errore'] = "Errore durante l'aggiunta.";
-        header("Location: ../view/aggiungiVino.php"); // Riprova in caso di errore
-        exit();
+    // 3. Validazione minima
+    if (!empty($titolo) && !empty($descrizione)) {
+        $risultato = aggiungiRicetta($conn, $descrizione, $titolo, $difficolta, $id_utente, $dataCreazione, $id_nazionalita, $id_tipologia, $file_copertina, $altri_files);
+
+        if ($risultato) {
+            header("Location: ../view/listaRicetteUtente.php?success=1");
+            exit();
+        }
     }
-}
 
-// Se qualcuno prova ad accedere al controller senza POST (es. via URL), lo rimandiamo alla lista
-header("Location: ../view/listaVini.php");
-exit();
+    header("Location: ../view/creaRicetta.php?error=campi_mancanti");
+}
