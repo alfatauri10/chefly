@@ -1,8 +1,8 @@
 <header class="main-header">
     <div class="header-left">
         <!-- Percorsi aggiornati con / iniziale -->
-        <img src="/img/logo.png" class="logo">
-        <a href="/index.php" class="site-title">
+        <img src="img/logo.png" class="logo">
+        <a href="index.php" class="site-title">
             Chefly
         </a>
     </div>
@@ -34,8 +34,8 @@
             </div>
 
         <?php else: ?>
-            <a href="/view/login.php" class="login-button">
-                <img src="/img/fotoProfilo.jpg" class="user-icon">
+            <a href="view/login.php" class="login-button">
+                <img src="img/fotoProfilo.jpg" class="user-icon">
                 <span>Accedi</span>
             </a>
         <?php endif; ?>
