@@ -15,6 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['user_cognome'] = $user['cognome']; // Aggiunto
         $_SESSION['user_ruolo']   = $user['idRuolo']; // Aggiunto (usa il nome esatto della colonna DB)
         $_SESSION['username']   = $user['userName']; // Aggiunto (usa il nome esatto della colonna DB)
+        $_SESSION['fotoProfilo']   = $user['urlFotoProfilo']; // Aggiunto (usa il nome esatto della colonna DB)
+
 
         header("Location: ../index.php");
         exit();

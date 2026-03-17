@@ -2,15 +2,22 @@
 include "../include/inizio.php";
 ?>
 
+    <body class="body-login">
 
-    <div class="card">
-        <h2 class="text-center mb-4">Accesso Utente</h2>
+<div class="container d-flex justify-content-center align-items-center vh-100">
+
+    <div class="container-form text-center">
+
+        <h1 class="login-title">
+            Accesso Utente
+        </h1>
+
+        <p class="login-subtitle">Accedi al tuo account</p>
 
         <?php
-        // messaggio di errore semplice (passato via GET)
         if (isset($_GET['error'])) {
             $msg = ($_GET['error'] == 1) ? "Email o password errati." : "Si è verificato un errore.";
-            echo '<div class="alert alert-danger">' . htmlspecialchars($msg) . '</div>';
+            echo '<div class="alert alert-login-error">' . htmlspecialchars($msg) . '</div>';
         }
         ?>
 
@@ -19,27 +26,55 @@ include "../include/inizio.php";
         <?php endif; ?>
 
         <form action="../controller/logInController.php" method="post">
-            <label class="form-label">Email</label>
-            <input type="email"
-                   name="mail"
-                   class="form-control mb-3"
-                   placeholder="inserisci la tua email"
-                   value="<?php echo htmlspecialchars($_GET['mail'] ?? ''); ?>"
-                   required>
 
+            <div class="form-group text-start">
+                <label class="form-label-custom">Email</label>
 
-            <label class="form-label">Password</label>
-            <input type="password" name="password" class="form-control mb-3"
-                   placeholder="inserisci la password" required>
+                <input type="email"
+                       name="mail"
+                       class="form-control-custom"
+                       placeholder="Inserisci la tua email"
+                       value="<?php echo htmlspecialchars($_GET['mail'] ?? ''); ?>"
+                       required>
 
-            <button type="submit" class="btn btn-primary w-100">Accedi</button>
+            </div>
+
+            <div class="form-group text-start">
+
+                <label class="form-label-custom">Password</label>
+
+                <input type="password"
+                       name="password"
+                       class="form-control-custom"
+                       placeholder="Inserisci la password"
+                       required>
+
+            </div>
+
+            <button type="submit" class="btn-login-action mt-3">
+                Accedi
+            </button>
+
         </form>
 
-        <div class="text-center mt-3">
-            <a href="signup.php">Non hai un account? Registrati</a>
+        <div class="mt-4">
+
+            <p class="small text-uppercase login-text">
+                Non hai un account?
+                <a href="signup.php" class="gold-link">Registrati</a>
+            </p>
+
+            <a href="../index.php" class="back-home-link">
+                ← Torna alla Home
+            </a>
+
         </div>
+
     </div>
-    <link href="../css/login.css" rel="stylesheet">
+
+</div>
+
+<link href="../css/login.css" rel="stylesheet">
 
 <?php
 include "../include/fine.php";

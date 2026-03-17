@@ -2,65 +2,141 @@
 include "../include/inizio.php";
 ?>
 
-    <?php if (isset($_GET['error'])): ?>
-        <?php if ($_GET['error']==='mail'): ?>
-            <div class="alert alert-danger">Utente gia registrato, esegui il <a href="login.php" class="btn">Login! </a></div>
-        <?php elseif ($_GET['error']==='username'): ?>
-            <div class="alert alert-danger">Username gia esistente!</div>
-        <?php endif; ?>
-    <?php endif; ?>
+    <body class="body-login">
 
-    <div class="card">
-        <h2 class="text-center mb-4">Inserimento nuovo utente</h2>
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="container-form text-center">
+
+        <h1 class="login-title">
+            Crea il tuo account
+        </h1>
+
+        <p class="login-subtitle">Unisciti alla piattaforma</p>
+
+        <?php if (isset($_GET['error'])): ?>
+
+            <?php if ($_GET['error']==='mail'): ?>
+                <div class="alert alert-login-error">
+                    Utente già registrato, esegui il
+                    <a href="login.php" class="gold-link">Login</a>
+                </div>
+
+            <?php elseif ($_GET['error']==='username'): ?>
+                <div class="alert alert-login-error">
+                    Username già esistente!
+                </div>
+            <?php endif; ?>
+
+        <?php endif; ?>
+
 
         <form action="../controller/singupController.php" method="post">
-            <label class="form-label">Cognome</label>
-            <input type="text" name="cognome" class="form-control mb-2"
-                   placeholder="inserisci il cognome" required>
 
-            <label class="form-label">Nome</label>
-            <input type="text" name="nome" class="form-control mb-2"
-                   placeholder="inserisci il nome" required>
+            <div class="row">
 
-            <label class="form-label">Username</label>
-            <input type="text" name="username" class="form-control mb-2"
-                   placeholder="inserisci l'userName" required>
+                <div class="col-md-6 text-start">
+                    <label class="form-label-custom">Nome</label>
 
-            <label class="form-label">Email</label>
-            <input type="email" name="mail" class="form-control mb-2"
-                   placeholder="inserisci l'email" required>
+                    <input type="text"
+                           name="nome"
+                           class="form-control-custom"
+                           placeholder="Inserisci il nome"
+                           required>
 
-            <label class="form-label">Password</label>
-            <input type="password" name="password" class="form-control mb-2"
-                   placeholder="inserisci la password" required>
+                </div>
 
-            <label class="form-label">Biografia</label>
-            <textarea name="biografia" class="form-control mb-2"
-                      placeholder="scrivi una breve biografia"></textarea>
-            <!--
-                    <label class="form-label">ID Timer</label>
-                    <input type="number" name="idTimer" class="form-control mb-2"
-                           placeholder="inserisci l'id del timer" required>
+                <div class="col-md-6 text-start">
+                    <label class="form-label-custom">Cognome</label>
 
-                    <label class="form-label">ID Livello</label>
-                    <input type="number" name="idLivello" class="form-control mb-2"
-                           placeholder="inserisci l'id del livello" required>
+                    <input type="text"
+                           name="cognome"
+                           class="form-control-custom"
+                           placeholder="Inserisci il cognome"
+                           required>
 
-                    <label class="form-label">Ruolo utente</label>
-                    <select name="idRuolo" class="form-control mb-2">
-                        <option value="1" selected>Utente normale</option>
-                        <option value="2">Utente amministratore</option>
-                    </select>
+                </div>
 
-                    <label class="form-label">Punteggio attuale</label>
-                    <input type="number" name="punteggioAttuale" class="form-control mb-3"
-                           value="0" required>
-                -->
-            <button type="submit" class="btn btn-primary w-100">Invia</button>
+            </div>
+
+
+            <div class="form-group text-start">
+
+                <label class="form-label-custom">Username</label>
+
+                <input type="text"
+                       name="username"
+                       class="form-control-custom"
+                       placeholder="Scegli uno username"
+                       required>
+
+            </div>
+
+
+            <div class="form-group text-start">
+
+                <label class="form-label-custom">Email</label>
+
+                <input type="email"
+                       name="mail"
+                       class="form-control-custom"
+                       placeholder="Inserisci la tua email"
+                       required>
+
+            </div>
+
+
+            <div class="form-group text-start">
+
+                <label class="form-label-custom">Password</label>
+
+                <input type="password"
+                       name="password"
+                       class="form-control-custom"
+                       placeholder="Inserisci la password"
+                       required>
+
+            </div>
+
+
+            <div class="form-group text-start">
+
+                <label class="form-label-custom">Biografia</label>
+
+                <textarea
+                        name="biografia"
+                        class="form-control-custom"
+                        placeholder="Scrivi una breve biografia"
+                ></textarea>
+
+            </div>
+
+
+            <button type="submit" class="btn-login-action mt-3">
+                Registrati
+            </button>
+
         </form>
-    </div>
 
-    <link href="../css/signup.css" rel="stylesheet">
+
+        <div class="mt-4">
+
+            <p class="small text-uppercase login-text">
+
+                Hai già un account?
+                <a href="login.php" class="gold-link">Accedi</a>
+
+            </p>
+
+            <a href="../index.php" class="back-home-link">
+                ← Torna alla Home
+            </a>
+
+        </div>
+
+    </div>
+</div>
+
+<link href="../css/signup.css" rel="stylesheet">
 
 <?php
 include "../include/fine.php";
