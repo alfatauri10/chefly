@@ -1,7 +1,7 @@
 <?php
 // controller/aggiungiRicettaController.php
 require_once '../model/ricetta.php';
-require_once '../include/connessione.php'; // La tua connessione al DB
+require_once '../include/connessione.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
