@@ -1,24 +1,34 @@
 <?php
 // controller/listaRicetteController.php
+// IMPORTANTE: Questo file non fa redirect. Va incluso all'inizio delle tue View
+// (es. in bacheca.php o in listaRicetteUtente.php)
+// Esempio di utilizzo: require_once '../controller/listaRicetteController.php';
 
-// Mettiamo in sicurezza la sessione all'inizio del file
+// 1. Mettiamo in sicurezza la sessione all'inizio del file
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-require_once '../model/ricetta.php';
+// 2. Inclusioni necessarie
 require_once '../include/connessione.php';
+require_once '../model/ricetta.php';
 
-// Se vogliamo la lista pubblica di TUTTE le ricette
+// Inizializziamo gli array per evitare errori nelle view se il DB è vuoto
+$tutteLeRicette = [];
+$mieRicette = [];
+
+// 3. Dati per la HOME / Bacheca pubblica
+// Recupera tutte le ricette (con info sull'autore e copertina grazie alla JOIN nel model)
 $tutteLeRicette = getTutteLeRicetteDB($conn);
 
-// Se invece siamo nell'area privata dell'utente loggato, recuperiamo le SUE ricette
-$mieRicette = [];
-if (isset($_SESSION['user_id'])) {
-    $mieRicette = getListaRicetteUtente($conn, $_SESSION['user_id']);
+// 4. Dati per l'AREA PERSONALE (Le mie ricette)
+$id_utente_loggato = $_SESSION['user_id'] ?? null;
+
+if ($id_utente_loggato) {
+    // Recupera solo le ricette create dall'utente loggato
+    $mieRicette = getListaRicetteUtente($conn, $id_utente_loggato);
 }
 
-// Questo controller non fa redirect.
-// Dovrà essere incluso all'inizio dei file view (es. require_once '../controller/listaRicetteController.php')
-// per rendere disponibili gli array $tutteLeRicette e $mieRicette all'HTML della pagina.
+// Ora le variabili $tutteLeRicette e $mieRicette sono pronte per essere ciclare
+// tramite un foreach all'interno del codice HTML delle tue pagine!
 ?>

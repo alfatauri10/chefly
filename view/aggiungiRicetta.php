@@ -7,6 +7,15 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
 }
+
+// Includiamo il database e il modello per estrarre le anagrafiche
+require_once '../include/connessione.php';
+require_once '../model/ricetta.php';
+
+// Recuperiamo i dati per i menu a tendina
+$lista_tipologie = getTutteLeTipologie($conn);
+$lista_nazionalita = getTutteLeNazionalita($conn);
+
 ?>
 
 <!DOCTYPE html>
@@ -14,11 +23,11 @@ if (!isset($_SESSION['user_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aggiungi Ricetta - La Mia Cucina</title>
+    <title>Aggiungi Ricetta (Fase 1) - La Mia Cucina</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Link al nuovo foglio di stile esterno -->
+    <!-- Link al foglio di stile esterno -->
     <link rel="stylesheet" href="../css/aggiungiRicetta.css">
 </head>
 <body class="add-recipe-page">
@@ -33,15 +42,15 @@ if (!isset($_SESSION['user_id'])) {
                     <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"></path>
                     <line x1="6" y1="17" x2="18" y2="17"></line>
                 </svg>
-                Nuova Ricetta
+                Nuova Ricetta - Fase 1
             </h1>
-            <p class="recipe-subtitle">Condividi la tua creazione culinaria con la community</p>
+            <p class="recipe-subtitle">Inserisci i dati principali. I passaggi, gli ingredienti e le cotture verranno aggiunti nella fase successiva!</p>
         </div>
 
         <!-- Messaggio di errore -->
         <?php if (isset($_GET['error']) && $_GET['error'] == 'campi_mancanti'): ?>
-            <div class="alert-error">
-                Per favore, compila almeno il titolo e la descrizione.
+            <div class="alert-error" style="color: red; background-color: #fee; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
+                Per favore, compila almeno il titolo, la descrizione e seleziona la difficoltà.
             </div>
         <?php endif; ?>
 
@@ -53,8 +62,8 @@ if (!isset($_SESSION['user_id'])) {
             </div>
 
             <div class="form-group">
-                <label class="form-label">Descrizione e Procedimento *</label>
-                <textarea name="descrizione" class="form-control" placeholder="Descrivi gli ingredienti e i passaggi principali..." required></textarea>
+                <label class="form-label">Descrizione Breve *</label>
+                <textarea name="descrizione" class="form-control" placeholder="Scrivi una breve introduzione alla tua ricetta..." required></textarea>
             </div>
 
             <div class="form-group">
@@ -70,12 +79,27 @@ if (!isset($_SESSION['user_id'])) {
             <!-- Riga con due colonne su Desktop, impilata su Mobile -->
             <div class="form-row">
                 <div class="form-group form-col">
-                    <label class="form-label">ID Nazionalità</label>
-                    <input type="number" name="id_nazionalita" class="form-control" placeholder="Es: 1">
+                    <label class="form-label">Nazionalità</label>
+                    <select name="id_nazionalita" class="form-control">
+                        <option value="" disabled selected>Seleziona la nazionalità</option>
+                        <?php foreach ($lista_nazionalita as $nazionalita): ?>
+                            <option value="<?php echo $nazionalita['id']; ?>">
+                                <?php echo htmlspecialchars($nazionalita['nome']); ?>
+                                <?php if (!empty($nazionalita['sigla'])) echo "(" . htmlspecialchars($nazionalita['sigla']) . ")"; ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
                 <div class="form-group form-col">
-                    <label class="form-label">ID Tipologia Piatto</label>
-                    <input type="number" name="id_tipologia" class="form-control" placeholder="Es: 2">
+                    <label class="form-label">Tipologia Piatto</label>
+                    <select name="id_tipologia" class="form-control">
+                        <option value="" disabled selected>Seleziona la tipologia</option>
+                        <?php foreach ($lista_tipologie as $tipologia): ?>
+                            <option value="<?php echo $tipologia['id']; ?>">
+                                <?php echo htmlspecialchars($tipologia['nome']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
             </div>
 
@@ -91,8 +115,9 @@ if (!isset($_SESSION['user_id'])) {
                 <span class="file-hint">Tieni premuto CTRL (o CMD su Mac) per selezionare più foto.</span>
             </div>
 
+            <!-- Il testo del bottone fa capire che ci sarà uno step successivo -->
             <button type="submit" class="btn-submit">
-                Pubblica Ricetta
+                Salva e procedi ai Passi &rarr;
             </button>
 
         </form>
