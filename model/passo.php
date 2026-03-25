@@ -31,14 +31,14 @@ function insertIngredientiPassoDb($conn, $idPasso, $idIngredienti, $dose)
 /* insertFileDbPasso():
  * Tabella mediaPassi: urlMedia, idPasso
  */
-function insertFileDbPasso($conn, $url, $idPasso) {
+function insertFileDbPasso($conn, $urlMedia, $idPasso) {
 
     // Nomi delle colonne corretti in base allo schema (camelCase)
     $sql = "INSERT INTO mediaPassi (urlMedia, idPasso) 
             VALUES (?, ?)";
 
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("si", $url, $idPasso);
+    $stmt->bind_param("si", $urlMedia, $idPasso);
 
     return $stmt->execute();
 }
