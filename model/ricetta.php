@@ -1,7 +1,7 @@
 <?php
 // model/ricetta.php
 
-require_once __DIR__ . '/ricettaHelper.php';
+require_once __DIR__ . '/mediaHelper.php';
 
 
 /* aggiungiRicetta():
@@ -64,18 +64,16 @@ function aggiungiRicetta($conn, $descrizione, $titolo, $difficolta, $id_utente, 
 }
 
 /* insertFileDbRicetta():
- * Tabella media: urlMedia, isPasso, idRicetta, idPasso, isCopertina
+ * Tabella mediaRicette: urlMedia, idRicetta, isCopertina
  */
 function insertFileDbRicetta($conn, $url, $id_ricetta, $is_copertina) {
-    $is_passo = 0;
-    $id_passo = null; // Impostato a null perché la foto è della ricetta, non di un passo specifico
 
     // Nomi delle colonne corretti in base allo schema (camelCase)
-    $sql = "INSERT INTO media (urlMedia, isPasso, idRicetta, idPasso, isCopertina) 
-            VALUES (?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO mediaRicette (urlMedia, idRicetta, isCopertina) 
+            VALUES (?, ?, ?)";
 
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("siiii", $url, $is_passo, $id_ricetta, $id_passo, $is_copertina);
+    $stmt->bind_param("sii", $url, $id_ricetta, $is_copertina);
 
     return $stmt->execute();
 }
@@ -145,7 +143,7 @@ function getRicettaByIdDB($conn, $id_ricetta) {
  */
 function deleteRicettaDB($conn, $id_ricetta) {
     // 1. Eliminazione sicura dei media (usando prepared statement invece di concatenazione)
-    $sql_media = "DELETE FROM media WHERE idRicetta = ?";
+    $sql_media = "DELETE FROM mediaRicette WHERE idRicetta = ?";
     $stmt_media = $conn->prepare($sql_media);
     $stmt_media->bind_param("i", $id_ricetta);
     $stmt_media->execute();
