@@ -28,15 +28,17 @@ function insertIngredientiPassoDb($conn, $idPasso, $idIngredienti, $dose)
     return false;
 }
 
+/* insertFileDbPasso():
+ * Tabella mediaPassi: urlMedia, idPasso
+ */
 function insertFileDbPasso($conn, $url, $idPasso) {
-    $isPasso = 1;
 
     // Nomi delle colonne corretti in base allo schema (camelCase)
-    $sql = "INSERT INTO media (urlMedia, isPasso, idRicetta, idPasso, isCopertina) 
-            VALUES (?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO mediaPassi (urlMedia, idPasso) 
+            VALUES (?, ?)";
 
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("siiii", $url, $isPasso, $idPasso, null, 0);
+    $stmt->bind_param("si", $url, $idPasso);
 
     return $stmt->execute();
 }
