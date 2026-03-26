@@ -3,13 +3,15 @@
 
 require_once __DIR__ . '/mediaHelper.php';
 
-
-/* aggiungiRicetta():
- * Coordina l'inserimento della ricetta e di tutti i file multimediali associati.
+/**
+ * aggiungiRicetta()
+ * @descrizione: Inserisce i dati principali della ricetta e le sue immagini.
+ * NOTA: La gestione dei passi, ingredienti e cotture andrà fatta in una fase successiva
+ * (es. ciclando i passi creati dall'utente e richiamando insertPassoDB).
  */
-function aggiungiRicetta($conn, $descrizione, $titolo, $difficolta, $id_utente, $dataCreazione, $id_nazionalita, $id_tipologia, $file_copertina = null, $altri_files = [], $ingredienti = [], $cotture = [] ) {
+function aggiungiRicetta($conn, $descrizione, $titolo, $difficolta, $id_utente, $dataCreazione, $id_nazionalita, $id_tipologia, $file_copertina = null, $altri_files = []) {
 
-    // 1. Inserimento Ricetta
+    // 1. Inserimento Ricetta nel DB
     $id_ricetta = insertRicettaDB($conn, $descrizione, $titolo, $difficolta, $id_utente, $dataCreazione, $id_nazionalita, $id_tipologia);
 
     if ($id_ricetta) {
@@ -40,91 +42,98 @@ function aggiungiRicetta($conn, $descrizione, $titolo, $difficolta, $id_utente, 
             }
         }
 
-        // 4. Gestione Ingredienti (Aggiornato per array associativo)
-        if (!empty($ingredienti) && is_array($ingredienti)) {
-            foreach ($ingredienti as $ingrediente) {
-                // Verifichiamo che l'elemento contenga sia l'id che la dose prima di inserirlo
-                if (isset($ingrediente['id']) && isset($ingrediente['dose'])) {
-                    insertIngredienteRicettaDB($conn, $id_ricetta, $ingrediente['id'], $ingrediente['dose']);
-                }
-            }
-        }
-
-        // 5. Gestione Cotture
-        if (!empty($cotture) && is_array($cotture)) {
-            foreach ($cotture as $id_cottura) {
-                insertCotturaRicettaDB($conn, $id_ricetta, $id_cottura);
-            }
-        }
-
-
-        return $id_ricetta;
+        return $id_ricetta; // Operazione completata con successo
     }
-    return false;
+
+    return false; // Fallito l'inserimento iniziale
 }
 
-/* insertFileDbRicetta():
- * Tabella mediaRicette: urlMedia, idRicetta, isCopertina
+/**
+ * insertFileDbRicetta()
+ * @descrizione: Inserisce nella tabella 'media' i percorsi dei file riguardanti le ricette.
+ *  Tabella mediaRicette: urlMedia, idRicetta, isCopertina
  */
 function insertFileDbRicetta($conn, $url, $id_ricetta, $is_copertina) {
 
-    // Nomi delle colonne corretti in base allo schema (camelCase)
+
     $sql = "INSERT INTO mediaRicette (urlMedia, idRicetta, isCopertina) 
             VALUES (?, ?, ?)";
 
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("sii", $url, $id_ricetta, $is_copertina);
-
     return $stmt->execute();
 }
 
-/* insertRicettaDB():
- * Tabella ricette: idCreatore, dataCreazione, idNazionalita, idTipologia
+/**
+ * insertRicettaDB()
+ * @descrizione: Inserisce tutti i dati di input nella tabella 'ricette' nel DB.
+ * Ritorna l'ID della ricetta appena creata (Primary Key).
  */
 function insertRicettaDB($conn, $descrizione, $titolo, $difficolta, $id_utente, $dataCreazione, $id_nazionalita, $id_tipologia) {
-    // Nomi delle colonne corretti in base allo schema (camelCase)
     $sql = "INSERT INTO ricette (descrizione, titolo, difficolta, idCreatore, dataCreazione, idNazionalita, idTipologia) 
             VALUES (?, ?, ?, ?, ?, ?, ?)";
+
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("sssisii", $descrizione, $titolo, $difficolta, $id_utente, $dataCreazione, $id_nazionalita, $id_tipologia);
 
     if ($stmt->execute()) {
-        return $conn->insert_id; // Ritorna l'ID della ricetta appena creata
+        return $conn->insert_id;
     }
     return false;
 }
-/*
- * @descrizione:
- * riceve in ingresso la ricetta, l'ingrediente da inserire e la dose,
- * in seguito lo inserisco nel db
- *
- * IMP:DA RICHIAMARE 1 VOLTA PER INGREDIENTE
- *
- * UGUALE PER  insertCotturaRicettaDB()
+
+/**
+ * insertPassoDB() [NUOVA FUNZIONE]
+ * @descrizione: Inserisce un nuovo passo associato alla ricetta.
+ * Ritorna l'ID del passo appena creato, fondamentale per agganciarci poi ingredienti e cotture.
  */
-function insertIngredienteRicettaDB($conn,$id_ricetta,$idIngrediente,$dose){
-    $sql = "INSERT INTO ingredientiRicette (idRicetta, idIngrediente, dose) values (?, ?, ?)";
+function insertPassoDB($conn, $id_ricetta, $titolo, $descrizione, $numero_passo) {
+    $sql = "INSERT INTO Passi (idRicetta, titolo, descrizione, ordine) VALUES (?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iis", $id_ricetta, $idIngrediente, $dose);
+    // Assumiamo che 'ordine' o 'numero_passo' sia un intero per ordinare i vari step
+    $stmt->bind_param("issi", $id_ricetta, $titolo, $descrizione, $numero_passo);
+
     if ($stmt->execute()) {
         return $conn->insert_id;
     }
     return false;
 }
 
-function insertCotturaRicettaDB($conn,$id_ricetta,$idCottura){
-    $sql = "INSERT INTO CottureRicette (idRicetta, idCottura) values (?, ?)";
+/**
+ * insertIngredientePassoDB() [RINOMINATA]
+ * @descrizione: Associa un ingrediente a uno specifico PASSO della ricetta, indicandone la dose.
+ * DA RICHIAMARE 1 VOLTA PER OGNI INGREDIENTE DEL PASSO.
+ */
+function insertIngredientePassoDB($conn, $id_Passo, $id_ingrediente, $dose) {
+    $sql = "INSERT INTO passiIngredienti (idPasso, idIngrediente, dose) VALUES (?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ii", $id_ricetta, $idCottura);
+    $stmt->bind_param("iis", $id_Passo, $id_ingrediente, $dose);
+
     if ($stmt->execute()) {
-        return $conn->insert_id;
+        return true;
     }
     return false;
 }
 
+/**
+ * insertCotturaPassoDB() [RINOMINATA]
+ * @descrizione: Associa una tipologia di cottura a uno specifico PASSO della ricetta.
+ * DA RICHIAMARE 1 VOLTA PER OGNI TIPO DI COTTURA DEL PASSO.
+ */
+function insertCotturaPassoDB($conn, $id_Passo, $id_cottura) {
+    $sql = "INSERT INTO cotturePassi (idPasso, idCottura) VALUES (?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ii", $id_Passo, $id_cottura);
 
-/* getRicettaByIdDB():
- * Recupera una singola ricetta tramite il suo ID (Utile per controlli di sicurezza prima di eliminare).
+    if ($stmt->execute()) {
+        return true;
+    }
+    return false;
+}
+
+/**
+ * getRicettaByIdDB()
+ * @descrizione: Recupera una singola ricetta tramite il suo ID.
  */
 function getRicettaByIdDB($conn, $id_ricetta) {
     $sql = "SELECT * FROM ricette WHERE id = ?";
@@ -138,17 +147,49 @@ function getRicettaByIdDB($conn, $id_ricetta) {
     return null;
 }
 
-/* deleteRicettaDB():
- * Pulisce prima i media collegati e poi la ricetta in modo sicuro.
+/**
+ * deleteRicettaDB() [AGGIORNATA PER LA NUOVA STRUTTURA]
+ * @descrizione: Elimina una ricetta pulendo le dipendenze in modo strutturato:
+ * Elimina i media -> Trova i passi -> Elimina ingredienti/cotture dei passi -> Elimina passi -> Elimina ricetta.
  */
 function deleteRicettaDB($conn, $id_ricetta) {
-    // 1. Eliminazione sicura dei media (usando prepared statement invece di concatenazione)
+    // 1. Eliminazione dei media collegati
     $sql_media = "DELETE FROM mediaRicette WHERE idRicetta = ?";
     $stmt_media = $conn->prepare($sql_media);
     $stmt_media->bind_param("i", $id_ricetta);
     $stmt_media->execute();
 
-    // 2. Eliminazione della ricetta
+    // 2. Recuperiamo tutti i passi associati alla ricetta
+    $sql_get_passi = "SELECT id FROM Passi WHERE idRicetta = ?";
+    $stmt_get_passi = $conn->prepare($sql_get_passi);
+    $stmt_get_passi->bind_param("i", $id_ricetta);
+    $stmt_get_passi->execute();
+    $result_passi = $stmt_get_passi->get_result();
+
+    // 3. Eliminiamo i collegamenti per ogni singolo passo
+    while ($row = $result_passi->fetch_assoc()) {
+        $id_passo = $row['id'];
+
+        // Elimina collegamenti ingredienti
+        $sql_ing = "DELETE FROM passiIngredienti WHERE idPasso = ?";
+        $stmt_ing = $conn->prepare($sql_ing);
+        $stmt_ing->bind_param("i", $id_passo);
+        $stmt_ing->execute();
+
+        // Elimina collegamenti cotture
+        $sql_cot = "DELETE FROM cotturePassi WHERE idPasso = ?";
+        $stmt_cot = $conn->prepare($sql_cot);
+        $stmt_cot->bind_param("i", $id_passo);
+        $stmt_cot->execute();
+    }
+
+    // 4. Eliminazione dei passi stessi
+    $sql_passi = "DELETE FROM Passi WHERE idRicetta = ?";
+    $stmt_passi = $conn->prepare($sql_passi);
+    $stmt_passi->bind_param("i", $id_ricetta);
+    $stmt_passi->execute();
+
+    // 5. Infine, eliminazione della ricetta vera e propria
     $sql_ricetta = "DELETE FROM ricette WHERE id = ?";
     $stmt_ricetta = $conn->prepare($sql_ricetta);
     $stmt_ricetta->bind_param("i", $id_ricetta);
@@ -156,12 +197,12 @@ function deleteRicettaDB($conn, $id_ricetta) {
     return $stmt_ricetta->execute();
 }
 
-/* getListaRicetteUtente():
- * Filtra per idCreatore.
+/**
+ * getListaRicetteUtente()
+ * @descrizione: Recupera l'elenco delle ricette create da uno specifico utente (filtro per idCreatore).
  */
 function getListaRicetteUtente($conn, $id_utente) {
     $lista = [];
-    // Nomi delle colonne corretti (dataCreazione, idCreatore)
     $sql = "SELECT id, titolo, descrizione, difficolta, dataCreazione 
             FROM ricette 
             WHERE idCreatore = ? 
@@ -179,12 +220,13 @@ function getListaRicetteUtente($conn, $id_utente) {
     return $lista;
 }
 
-/* getTutteLeRicetteDB():
- * JOIN su idCreatore e idRicetta.
+/**
+ * getTutteLeRicetteDB()
+ * @descrizione: Recupera tutte le ricette nel database.
+ * Esegue una JOIN con gli utenti (per il nome autore) e con i media (per URL copertina).
  */
 function getTutteLeRicetteDB($conn) {
     $ricette = [];
-    // Nomi delle colonne corretti in base allo schema per tutte le tabelle coinvolte
     $sql = "SELECT r.*, u.nome AS nome_autore, m.urlMedia AS url_copertina 
             FROM ricette r
             JOIN utenti u ON r.idCreatore = u.id
@@ -199,3 +241,37 @@ function getTutteLeRicetteDB($conn) {
     }
     return $ricette;
 }
+
+/**
+ * getTutteLeNazionalita()
+ * @descrizione: Recupera tutte le nazionalità dall'anagrafica per i menu a tendina
+ */
+function getTutteLeNazionalita($conn) {
+    $lista = [];
+    $sql = "SELECT id, nome, sigla FROM anagNazionalita ORDER BY nome ASC";
+    $result = $conn->query($sql);
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $lista[] = $row;
+        }
+    }
+    return $lista;
+}
+
+/**
+ * getTutteLeTipologie()
+ * @descrizione: Recupera tutte le tipologie di piatti dall'anagrafica per i menu a tendina
+ */
+function getTutteLeTipologie($conn) {
+    $lista = [];
+    $sql = "SELECT id, nome FROM anagTipologiePiatti ORDER BY nome ASC";
+    $result = $conn->query($sql);
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $lista[] = $row;
+        }
+    }
+    return $lista;
+}
+
+?>

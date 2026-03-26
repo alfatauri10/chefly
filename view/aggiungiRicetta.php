@@ -13,9 +13,8 @@ require_once '../include/connessione.php';
 require_once '../model/ricetta.php';
 
 // Recuperiamo i dati per i menu a tendina
-$lista_tipologie = getTutteLeTipologie($conn);
 $lista_nazionalita = getTutteLeNazionalita($conn);
-
+$lista_tipologie = getTutteLeTipologie($conn);
 ?>
 
 <!DOCTYPE html>
