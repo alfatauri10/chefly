@@ -1,105 +1,168 @@
-/* HEADER COMPATTO */
+/* HEADER PRINCIPALE CON OMBRA */
 .main-header {
     position: fixed;
     top: 0; left: 0;
     width: 100%;
-    height: 70px; /* Altezza ridotta per non essere enorme */
+    height: 90px;
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-columns: 1fr 2fr 1fr;
     align-items: center;
-    padding: 0 2rem;
+    padding: 0 3rem;
     background: #ffffff;
-    border-bottom: 1px solid #f0f0f0;
+    /* Ombra leggera e moderna */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     z-index: 1000;
     box-sizing: border-box;
     font-family: 'Inter', sans-serif;
+    border-bottom: 1px solid #f0f0f0;
 }
 
-/* RICERCA SINISTRA */
-.header-left { display: flex; }
-
-.search-wrapper {
+/* 1. LOGO A SINISTRA */
+.header-left {
     display: flex;
-    align-items: center;
-    background: #F7F7F7; /* Grigio richiesto */
-    border-radius: 8px;
-    padding: 4px 12px;
-    width: 240px;
-    border: 1px solid #eee;
+    justify-content: flex-start;
 }
 
-.search-bar {
-    border: none;
-    background: transparent;
-    outline: none;
-    width: 100%;
-    font-size: 0.85rem;
+.header-logo {
+    height: 70px;
+    width: auto;
+    display: block;
 }
 
-.search-icon-btn {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-}
-
-/* LOGO CENTRALE PICCOLO */
+/* 2. BARRA DI RICERCA CENTRALE (LUNGA E SOTTILE) */
 .header-center {
     display: flex;
     justify-content: center;
 }
 
-.header-logo {
-    height: 50px; /* Ridotto per non far esplodere l'header */
-    width: auto;
-    display: block;
+.search-form {
+    width: 100%;
+    max-width: 600px;
 }
 
-/* DESTRA E BOTTONI NERI */
+.search-wrapper {
+    display: flex;
+    align-items: center;
+    background: #F7F7F7;
+    border-radius: 30px;
+    padding: 8px 20px;
+    border: 1px solid #e0e0e0;
+    transition: all 0.2s ease;
+}
+
+/* Effetto focus sulla barra */
+.search-wrapper:focus-within {
+    background: #fff;
+    border-color: #ccc;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.search-bar {
+    flex: 1;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 1rem;
+    color: #333;
+}
+
+/* LENTE DI RICERCA SENZA BORDI */
+.search-icon-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    margin-left: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    outline: none;
+}
+
+.search-icon-btn svg {
+    stroke: #555;
+    transition: stroke 0.2s;
+}
+
+.search-icon-btn:hover svg {
+    stroke: #000;
+}
+
+/* 3. DESTRA: LOGIN E SIGNUP SENZA SOTTOLINEATURA */
 .header-right {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 15px;
+    gap: 20px;
 }
 
 .login-link {
     text-decoration: none;
     color: #000;
-    font-weight: 500;
-    font-size: 0.85rem;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: opacity 0.2s;
+}
+
+.login-link:hover {
+    opacity: 0.7;
 }
 
 .signup-button {
     background: #000;
     color: #fff;
     text-decoration: none;
-    padding: 8px 18px;
-    border-radius: 6px;
+    padding: 10px 24px;
+    border-radius: 8px;
     font-weight: 600;
-    font-size: 0.85rem;
-    transition: opacity 0.2s;
+    font-size: 1rem;
+    transition: background 0.2s, transform 0.2s;
 }
 
-/* PROFILO E DROPDOWN */
-.profile-pic { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; object-fit: cover; }
+.signup-button:hover {
+    background: #333;
+    transform: translateY(-1px); /* Piccolo effetto movimento */
+}
+
+/* PROFILO (Se loggato) */
+.profile-pic {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    object-fit: cover;
+    border: 2px solid #f0f0f0;
+}
+
 .profile-menu { position: relative; }
+
 .dropdown-menu {
-    position: absolute; top: 45px; right: 0;
-    background: #fff; border: 1px solid #eee;
-    border-radius: 8px; display: none; padding: 5px; min-width: 150px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    display: none;
+    padding: 8px;
+    min-width: 180px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
+
 .dropdown-menu.show { display: block; }
+
 .dropdown-item {
-    display: block; padding: 8px 12px;
-    text-decoration: none; color: #000; font-size: 0.8rem;
+    display: block;
+    padding: 12px;
+    text-decoration: none;
+    color: #000;
+    font-size: 0.9rem;
+    border-radius: 6px;
 }
+
 .dropdown-item:hover { background: #F7F7F7; }
 
 /* FIX PER IL BODY */
 body {
-    padding-top: 70px; /* Evita che il contenuto finisca sotto l'header */
+    padding-top: 90px;
     margin: 0;
 }

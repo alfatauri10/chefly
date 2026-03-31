@@ -1,7 +1,13 @@
-<?php if (session_status() === PHP_SESSION_NONE) { session_start(); } ?>
-
 <header class="main-header">
+    <!-- 1. Logo a sinistra -->
     <div class="header-left">
+        <a href="/index.php">
+            <img src="/img/logo.png" alt="Chefly" class="header-logo">
+        </a>
+    </div>
+
+    <!-- 2. Barra di ricerca al centro -->
+    <div class="header-center">
         <form action="/ricerca.php" method="GET" class="search-form">
             <div class="search-wrapper">
                 <input type="text" name="q" placeholder="Cerca ricette..." class="search-bar">
@@ -15,12 +21,7 @@
         </form>
     </div>
 
-    <div class="header-center">
-        <a href="/index.php">
-            <img src="/img/logo.png" alt="Chefly" class="header-logo">
-        </a>
-    </div>
-
+    <!-- 3. Profilo/Login a destra -->
     <div class="header-right">
         <?php if(isset($_SESSION['user_id'])): ?>
             <div class="profile-menu">
@@ -36,11 +37,3 @@
         <?php endif; ?>
     </div>
 </header>
-
-<script>
-    document.getElementById('profileToggle')?.addEventListener('click', function(e) {
-        e.stopPropagation();
-        document.getElementById('dropdownMenu').classList.toggle('show');
-    });
-    window.onclick = function() { document.getElementById('dropdownMenu')?.classList.remove('show'); };
-</script>
