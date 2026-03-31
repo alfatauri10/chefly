@@ -99,37 +99,9 @@ function insertPassoDB($conn, $id_ricetta, $titolo, $descrizione, $numero_passo)
     return false;
 }
 
-/**
- * insertIngredientePassoDB() [RINOMINATA]
- * @descrizione: Associa un ingrediente a uno specifico PASSO della ricetta, indicandone la dose.
- * DA RICHIAMARE 1 VOLTA PER OGNI INGREDIENTE DEL PASSO.
- */
-function insertIngredientePassoDB($conn, $id_Passo, $id_ingrediente, $dose) {
-    $sql = "INSERT INTO passiIngredienti (idPasso, idIngrediente, dose) VALUES (?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iis", $id_Passo, $id_ingrediente, $dose);
 
-    if ($stmt->execute()) {
-        return true;
-    }
-    return false;
-}
 
-/**
- * insertCotturaPassoDB() [RINOMINATA]
- * @descrizione: Associa una tipologia di cottura a uno specifico PASSO della ricetta.
- * DA RICHIAMARE 1 VOLTA PER OGNI TIPO DI COTTURA DEL PASSO.
- */
-function insertCotturaPassoDB($conn, $id_Passo, $id_cottura) {
-    $sql = "INSERT INTO cotturePassi (idPasso, idCottura) VALUES (?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ii", $id_Passo, $id_cottura);
 
-    if ($stmt->execute()) {
-        return true;
-    }
-    return false;
-}
 
 /**
  * getRicettaByIdDB()
