@@ -1,150 +1,113 @@
-.body-login{
-    font-family: 'Montserrat', sans-serif;
-    background:#f7f3ef;
+/* login.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap');
+
+body.body-login {
+    font-family: 'Inter', sans-serif;
+    background-color: #f7f7f7; /* Sfondo richiesto */
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
 }
 
-/* card */
-.container-form{
-
-    background:white;
-    padding:50px;
-    border-radius:10px;
-
-    width:400px;
-
-    box-shadow:0 10px 30px rgba(0,0,0,0.08);
-
+/* Container centrale come nell'immagine */
+.container-form {
+    background: #f7f7f7; /* Sfondo coordinato col body per un look "flat" */
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
 }
 
-/* titolo */
-
-.login-title{
-
-    font-weight:500;
-    letter-spacing:3px;
-    text-transform:uppercase;
-
-    color:#2d1b10;
-
+/* Titolo Login - Bold e Nero */
+.login-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.login-subtitle{
-
-    margin-bottom:30px;
-    color:#7a6c61;
-
+.login-subtitle {
+    font-size: 14px;
+    color: #000000;
+    margin-bottom: 40px;
+    opacity: 0.7;
 }
 
-/* label */
-
-.form-label-custom{
-
-    font-size:13px;
-    text-transform:uppercase;
-
-    letter-spacing:1px;
-
-    font-weight:500;
-
+/* Struttura Input */
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
 }
 
-/* input */
-
-.form-control-custom{
-
-    width:100%;
-    padding:10px;
-
-    border:none;
-
-    border-bottom:1px solid #ddd;
-
-    margin-bottom:20px;
-
+.form-label-custom {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #000000;
+    margin-bottom: 8px;
 }
 
-.form-control-custom:focus{
-
-    outline:none;
-
-    border-bottom:1px solid #2d1b10;
-
+.form-control-custom {
+    width: 100%;
+    padding: 15px 0;
+    border: none;
+    border-bottom: 1.5px solid #000000; /* Linea nera come nell'immagine */
+    background: transparent;
+    color: #000000;
+    font-size: 15px;
+    transition: all 0.3s ease;
 }
 
-/* bottone */
-
-.btn-login-action{
-
-    width:100%;
-
-    padding:12px;
-
-    border:none;
-
-    background:#2d1b10;
-
-    color:white;
-
-    letter-spacing:2px;
-
-    text-transform:uppercase;
-
+.form-control-custom:focus {
+    outline: none;
+    opacity: 0.6;
 }
 
-.btn-login-action:hover{
-
-    background:#4a3327;
-
+/* Bottone Nero Pieno */
+.btn-login-action {
+    width: 100%;
+    padding: 18px;
+    background: #000000;
+    color: #f7f7f7;
+    border: none;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: opacity 0.3s ease;
 }
 
-/* link */
-
-.gold-link{
-
-    color:#b08d57;
-
-    text-decoration:none;
-
-    font-weight:500;
-
+.btn-login-action:hover {
+    opacity: 0.8;
 }
 
-.gold-link:hover{
-
-    text-decoration:underline;
-
+/* Link inferiori */
+.footer-links {
+    margin-top: 30px;
+    font-size: 12px;
 }
 
-/* errore */
-
-.alert-login-error{
-
-    background:#f8d7da;
-
-    padding:10px;
-
-    margin-bottom:20px;
-
-    border-radius:5px;
-
+.gold-link {
+    color: #000000;
+    text-decoration: none;
+    font-weight: 700;
+    border-bottom: 1px solid #000000;
+    margin: 0 10px;
 }
 
-.back-home-link{
-
-    display:block;
-
-    margin-top:10px;
-
-    font-size:14px;
-
-    color:#7a6c61;
-
-    text-decoration:none;
-
-}
-
-.back-home-link:hover{
-
-    text-decoration:underline;
-
+.back-home-link {
+    display: block;
+    margin-top: 25px;
+    color: #000000;
+    opacity: 0.5;
+    text-decoration: none;
+    font-size: 11px;
+    text-transform: uppercase;
 }
