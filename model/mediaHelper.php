@@ -31,6 +31,23 @@ function uploadFile($file_php, $id_utente, $id_ricetta, $is_copertina) {
     return null;
 }
 
+/* function deleteFile ()
+ * @descrizione:
+ * Elimina fisicamente il file dal server
+ */
+function deleteFile($percorso_file) {
+    if (empty($percorso_file)) {
+        return false;
+    }
+
+    $file_fisico = "../" . $percorso_file;
+    if (file_exists($file_fisico)) {
+        return unlink($file_fisico);
+    }
+
+    return false;
+}
+
 
 
 
