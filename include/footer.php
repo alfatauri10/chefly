@@ -8,12 +8,13 @@
                 Scopri, cucina e condividi le tue ricette preferite. Unisciti alla più grande community di appassionati di cucina.
             </p>
             <div class="social-icons">
-                <a href="#" class="social-icon" aria-label="Instagram">
+                <!-- Instagram -->
+                <a href="https://www.instagram.com/chefly67_?igsh=MW0yeHBoNW9rZXBhMA%3D%3D&utm_source=qr" class="social-icon" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
                 </a>
 
-                <!-- Icona TikTok CLICCABILE con il tuo link -->
-                <a href="https://www.tiktok.com/@chefly81?_r=1&_t=ZN-958pO4p3PRG" class="social-icon" aria-label="TikTok" target="_blank" rel="noopener noreferrer">
+                <!-- TikTok -->
+                <a href="https://tiktok.com" class="social-icon" aria-label="TikTok" target="_blank" rel="noopener noreferrer">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>
                     </svg>
