@@ -1,7 +1,7 @@
 <?php
 // controller/listaRicetteController.php
 // IMPORTANTE: Questo file non fa redirect. Va incluso all'inizio delle tue View
-// (es. in bacheca.php o in listaRicetteUtente.php)
+// (es. in bacheca.php o in ilMioRistorante.php)
 // Esempio di utilizzo: require_once '../controller/listaRicetteController.php';
 
 // 1. Mettiamo in sicurezza la sessione all'inizio del file

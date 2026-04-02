@@ -1,6 +1,3 @@
-Certamente! Ecco il codice PHP completo, dove ho inserito i commenti direttamente tra le righe per spiegarti l'azione di ogni singolo comando.
-
-PHP
 <?php
 
 /**
