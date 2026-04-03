@@ -3,17 +3,17 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-require_once '../include/connessione.php';
-require_once '../model/ricetta.php';
+require_once __DIR__ . '/../include/connessione.php';
+require_once __DIR__ . '/../model/ricetta.php';
 
 $id_utente = $_SESSION['user_id'] ?? null;
 if (!$id_utente) {
-    header("Location: ../view/login.php");
+    header("Location: /view/login.php");
     exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: ../view/ilMioRistorante.php");
+    header("Location: /view/ilMioRistorante.php");
     exit();
 }
 
@@ -32,7 +32,7 @@ $id_foto_da_eliminare = $_POST['foto_da_eliminare']   ?? [];
 $difficolta_valide = ['facile', 'media', 'difficile', 'esperto'];
 
 if (!$id_ricetta || empty($titolo) || empty($descrizione) || !in_array($difficolta, $difficolta_valide)) {
-    header("Location: ../view/modificaRicetta.php?id_ricetta=" . ($id_ricetta ?? '') . "&error=campi_mancanti");
+    header("Location: /view/modificaRicetta.php?id_ricetta=" . ($id_ricetta ?? '') . "&error=campi_mancanti");
     exit();
 }
 
@@ -51,9 +51,9 @@ $esito = updateRicettaByID(
 );
 
 if ($esito) {
-    header("Location: ../view/ilMioRistorante.php?success=ricetta_modificata");
+    header("Location: /view/ilMioRistorante.php?success=ricetta_modificata");
     exit();
 }
 
-header("Location: ../view/modificaRicetta.php?id_ricetta=" . $id_ricetta . "&error=errore_modifica");
+header("Location: /view/modificaRicetta.php?id_ricetta=" . $id_ricetta . "&error=errore_modifica");
 exit();

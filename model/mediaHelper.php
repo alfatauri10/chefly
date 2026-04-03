@@ -9,36 +9,24 @@
  * @return string|null        Ritorna il percorso del file per il DB, o null in caso di errore
  */
 function uploadFile($file_php, $id_utente, $id_ricetta, $is_copertina) {
-    // Verifica se il file è stato inviato e se non ci sono errori di caricamento PHP
     if (!isset($file_php) || $file_php['error'] != UPLOAD_ERR_OK) {
-        return null; // Interrompe se il file manca o è corrotto
+        return null;
     }
 
-    // Definisce il percorso della cartella: es. ../uploads/user_1/ricetta_42/
-    $cartella = "../uploads/user_" . $id_utente . "/ricetta_" . $id_ricetta . "/";
+    $cartella = __DIR__ . "/../uploads/user_" . $id_utente . "/ricetta_" . $id_ricetta . "/";
 
-    // Controlla se la cartella esiste già sul disco del server
     if (!is_dir($cartella)) {
-        // Crea la cartella. 0777 sono i permessi; 'true' permette di creare tutto il percorso (cartelle nidificate)
         mkdir($cartella, 0777, true);
     }
 
-    // Estrae l'estensione del file originale (es: "jpg" da "foto.jpg")
     $estensione = pathinfo($file_php['name'], PATHINFO_EXTENSION);
-
-    // Decide il nome: o "copertina.jpg" o un ID casuale tipo "65a1b2... .jpg"
-    $nome_file = ($is_copertina ? "copertina" : uniqid()) . "." . $estensione;
-
-    // Unisce cartella e nome per ottenere il percorso di destinazione finale
+    $nome_file  = ($is_copertina ? "copertina" : uniqid()) . "." . $estensione;
     $destinazione = $cartella . $nome_file;
 
-    // Tenta di spostare il file dalla memoria temporanea alla cartella definitiva
     if (move_uploaded_file($file_php['tmp_name'], $destinazione)) {
-        // Ritorna il percorso "pulito" (senza ../) pronto per essere salvato nel database
+        // Il path salvato nel DB rimane relativo alla root (per le img in HTML)
         return "uploads/user_" . $id_utente . "/ricetta_" . $id_ricetta . "/" . $nome_file;
     }
-
-    // Se lo spostamento fallisce (es. permessi negati), ritorna null
     return null;
 }
 
@@ -48,20 +36,13 @@ function uploadFile($file_php, $id_utente, $id_ricetta, $is_copertina) {
  * @return bool                 True se eliminato con successo, false altrimenti
  */
 function deleteFile($percorso_file) {
-    // Se la stringa del percorso è vuota, non c'è nulla da fare
-    if (empty($percorso_file)) {
-        return false;
-    }
+    if (empty($percorso_file)) return false;
 
-    // Aggiunge "../" per risalire alla cartella corretta rispetto alla posizione dello script
-    $file_fisico = "../" . $percorso_file;
+    // __DIR__ = model/ → saliamo alla root con /../
+    $file_fisico = __DIR__ . "/../" . $percorso_file;
 
-    // Controlla se il file esiste effettivamente nel filesystem
     if (file_exists($file_fisico)) {
-        // Elimina il file e restituisce l'esito dell'operazione (true/false)
         return unlink($file_fisico);
     }
-
-    // Ritorna false se il file non è stato trovato
     return false;
 }

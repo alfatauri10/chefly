@@ -9,9 +9,9 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// 2. Inclusioni necessarie
-require_once '../include/connessione.php';
-require_once '../model/ricetta.php';
+require_once __DIR__ . '/../include/connessione.php';
+require_once __DIR__ . '/../model/ricetta.php';
+
 
 // Inizializziamo gli array per evitare errori nelle view se il DB è vuoto
 $tutteLeRicette = [];

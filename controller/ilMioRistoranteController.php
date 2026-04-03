@@ -6,15 +6,15 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+require_once __DIR__ . '/../include/connessione.php';
+require_once __DIR__ . '/../model/ricetta.php';
+require_once __DIR__ . '/../model/passo.php';
+require_once __DIR__ . '/../model/user.php';
 
-require_once '../include/connessione.php';
-require_once '../model/user.php';
-require_once '../model/ricetta.php';
-require_once '../model/passo.php';
 
 $id_utente = $_SESSION['user_id'] ?? null;
 if (!$id_utente) {
-    header("Location: ../view/login.php");
+    header("Location: /view/login.php");
     exit();
 }
 

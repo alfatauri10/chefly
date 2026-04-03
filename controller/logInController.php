@@ -2,9 +2,9 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+require_once __DIR__ . '/../include/connessione.php';
+require_once __DIR__ . '/../model/user.php';
 
-require_once '../include/connessione.php';
-require_once '../model/user.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = findUserByMail($conn, $_POST['mail']);
@@ -18,10 +18,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['username']     = $user['userName'];
         $_SESSION['fotoProfilo']  = $user['urlFotoProfilo'];
 
-        header("Location: ../index.php");
+        header("Location: /index.php");
         exit();
     }
 
-    header("Location: ../view/login.php?error=1");
+    header("Location: /view/login.php?error=1");
     exit();
 }

@@ -3,17 +3,17 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-require_once '../include/connessione.php';
-require_once '../model/ricetta.php';
+require_once __DIR__ . '/../include/connessione.php';
+require_once __DIR__ . '/../model/ricetta.php';
 
 $id_utente = $_SESSION['user_id'] ?? null;
 if (!$id_utente) {
-    header("Location: ../view/login.php");
+    header("Location: /view/login.php");
     exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: ../view/ilMioRistorante.php");
+    header("Location: /view/ilMioRistorante.php");
     exit();
 }
 
@@ -31,7 +31,7 @@ $altri_files    = $_FILES['gallery']    ?? [];
 $difficolta_valide = ['facile', 'media', 'difficile', 'esperto'];
 
 if (empty($titolo) || empty($descrizione) || !in_array($difficolta, $difficolta_valide)) {
-    header("Location: ../view/aggiungiRicetta.php?error=campi_mancanti");
+    header("Location: /view/aggiungiRicetta.php?error=campi_mancanti");
     exit();
 }
 
@@ -50,9 +50,9 @@ $id_nuova_ricetta = aggiungiRicetta(
 
 if ($id_nuova_ricetta) {
     // Redirect alla pagina di aggiunta passi, passando l'id della ricetta appena creata
-    header("Location: ../view/aggiungiPasso.php?id_ricetta=" . $id_nuova_ricetta);
+    header("Location: /view/aggiungiPasso.php?id_ricetta=" . $id_nuova_ricetta);
     exit();
 }
 
-header("Location: ../view/aggiungiRicetta.php?error=campi_mancanti");
+header("Location: /view/aggiungiRicetta.php?error=campi_mancanti");
 exit();

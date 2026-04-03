@@ -3,17 +3,18 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-require_once '../include/connessione.php';
-require_once '../model/passo.php';
+require_once __DIR__ . '/../include/connessione.php';
+require_once __DIR__ . '/../model/passo.php';
+
 
 $id_utente = $_SESSION['user_id'] ?? null;
 if (!$id_utente) {
-    header("Location: ../view/login.php");
+    header("Location: /view/login.php");
     exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: ../view/ilMioRistorante.php");
+    header("Location: /view/ilMioRistorante.php");
     exit();
 }
 
@@ -31,7 +32,7 @@ $id_foto_da_eliminare = $_POST['foto_da_eliminare'] ?? [];
 $nuovi_media          = $_FILES['mediaPasso']        ?? [];
 
 if (!$id_passo || !$id_ricetta || empty($titolo) || empty($descrizione) || !$durata) {
-    header("Location: ../view/modificaPasso.php?id_passo=" . ($id_passo ?? '') . "&id_ricetta=" . ($id_ricetta ?? '') . "&error=campi_mancanti");
+    header("Location: /view/modificaPasso.php?id_passo=" . ($id_passo ?? '') . "&id_ricetta=" . ($id_ricetta ?? '') . "&error=campi_mancanti");
     exit();
 }
 
@@ -51,9 +52,9 @@ $esito = updatePasso(
 );
 
 if ($esito) {
-    header("Location: ../view/aggiungiPasso.php?id_ricetta=" . $id_ricetta . "&success=passo_modificato");
+    header("Location: /view/aggiungiPasso.php?id_ricetta=" . $id_ricetta . "&success=passo_modificato");
     exit();
 }
 
-header("Location: ../view/modificaPasso.php?id_passo=" . $id_passo . "&id_ricetta=" . $id_ricetta . "&error=errore_modifica");
+header("Location: /view/modificaPasso.php?id_passo=" . $id_passo . "&id_ricetta=" . $id_ricetta . "&error=errore_modifica");
 exit();

@@ -647,7 +647,7 @@ require_once '../controller/ilMioRistoranteController.php';
 
 </div><!-- /.ristorante-wrap -->
 
-<!-- FAB aggiungi ricetta -->
+<!-- FAB aggiungi ricetta TODO: visualizzzabile solo se è gia stata inserita una ricetta e da spostare -->
 <a href="aggiungiRicetta.php" class="fab" title="Aggiungi ricetta">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <line x1="12" y1="5" x2="12" y2="19"/>
