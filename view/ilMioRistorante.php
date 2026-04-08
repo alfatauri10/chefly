@@ -670,7 +670,7 @@ require_once '../controller/ilMioRistoranteController.php';
                  class="preview-circle">
         </div>
 
-        <form action="../controller/aggiornafotoprofiloController.php"
+        <form action="../controller/aggiornafotoprofilocontroller.php"
               method="POST"
               enctype="multipart/form-data"
               id="formFoto">
