@@ -167,3 +167,12 @@ function getStatisticheUtente($conn, $id_utente) {
 
     return $stats;
 }
+
+function aggiornafotoProfilo($conn, $id_utente, $url_foto) {
+    $sql  = "UPDATE utenti SET urlFotoProfilo = ? WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("si", $url_foto, $id_utente);
+    $esito = $stmt->execute();
+    $stmt->close();
+    return $esito;
+}
