@@ -1,13 +1,11 @@
 <header class="main-header">
 
-    <!-- 1. Logo a sinistra -->
     <div class="header-left">
         <a href="/index.php">
             <img src="/img/logo.png" alt="Chefly" class="header-logo">
         </a>
     </div>
 
-    <!-- 2. Barra di ricerca al centro -->
     <div class="header-center">
         <form action="/ricerca.php" method="GET" class="search-form">
             <div class="search-wrapper">
@@ -22,36 +20,22 @@
         </form>
     </div>
 
-    <!-- 3. Destra: profilo o login/signup -->
     <div class="header-right">
         <?php if (isset($_SESSION['user_id'])): ?>
             <div class="profile-menu">
 
-                <!-- Icona ristorante: rimanda a ilMioRistorante.php -->
-                <a href="/view/ilMioRistorante.php" class="header-restaurant-btn" title="Il mio ristorante">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                         stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <!-- Cappello da chef stilizzato -->
-                        <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/>
-                        <line x1="6" y1="17" x2="18" y2="17"/>
-                    </svg>
-                </a>
-
-                <!-- Foto profilo → dropdown -->
                 <img src="<?php echo htmlspecialchars($_SESSION['fotoProfilo'] ?? '/img/fotoProfilo.jpg'); ?>"
                      class="profile-pic"
                      id="profileToggle"
                      alt="Profilo">
 
                 <div class="dropdown-menu" id="dropdownMenu">
-                    <div class="dropdown-username">@<?php echo htmlspecialchars($_SESSION['username'] ?? ''); ?></div>
+                    <div class="dropdown-username"><?php echo htmlspecialchars($_SESSION['username'] ?? ''); ?></div>
+
                     <a href="/view/ilMioRistorante.php" class="dropdown-item">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px">
-                            <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/>
-                            <line x1="6" y1="17" x2="18" y2="17"/>
-                        </svg>
                         Il mio ristorante
                     </a>
+
                     <a href="/controller/logOutController.php" class="dropdown-item">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px">
                             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
