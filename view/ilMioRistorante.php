@@ -14,6 +14,8 @@ require_once '../controller/ilMioRistoranteController.php';
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
+    <link rel="stylesheet" href="../css/timer.css">
+    <script src="../js/timer.js" defer></script>
 
     <style>
         /* ── RESET & BASE ─────────────────────────────────────── */
@@ -269,7 +271,7 @@ require_once '../controller/ilMioRistoranteController.php';
             transition: max-height 0.35s ease;
         }
 
-        .passi-section.open { max-height: 2000px; }
+        .passi-section.open { max-height: 4000px; }
 
         .passi-inner {
             border-top: 1px solid #EDE8E0;
@@ -279,7 +281,7 @@ require_once '../controller/ilMioRistoranteController.php';
 
         .passo-row {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 12px;
             padding: 13px 0;
             border-bottom: 1px solid #F0ECE6;
@@ -299,6 +301,7 @@ require_once '../controller/ilMioRistoranteController.php';
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            margin-top: 4px;
         }
 
         .passo-info { flex: 1; min-width: 0; }
@@ -316,12 +319,14 @@ require_once '../controller/ilMioRistoranteController.php';
             font-size: 0.75rem;
             color: #8B7355;
             margin-top: 2px;
+            margin-bottom: 4px;
         }
 
         .passo-actions {
             display: flex;
             gap: 4px;
             flex-shrink: 0;
+            margin-top: 4px;
         }
 
         .btn-icon--sm {
@@ -516,7 +521,6 @@ require_once '../controller/ilMioRistoranteController.php';
                                 <img src="../<?php echo htmlspecialchars($ricetta['url_copertina']); ?>"
                                      alt="Copertina <?php echo htmlspecialchars($ricetta['titolo']); ?>">
                             <?php else: ?>
-                                <!-- Placeholder icona piatto -->
                                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M3 11l19-9-9 19-2-8-8-2z"/>
                                 </svg>
@@ -537,7 +541,6 @@ require_once '../controller/ilMioRistoranteController.php';
                         <!-- Azioni -->
                         <div class="recipe-actions">
 
-                            <!-- Modifica ricetta -->
                             <a href="modificaRicetta.php?id_ricetta=<?php echo $ricetta['id']; ?>"
                                class="btn-icon"
                                title="Modifica ricetta">
@@ -547,7 +550,6 @@ require_once '../controller/ilMioRistoranteController.php';
                                 </svg>
                             </a>
 
-                            <!-- Elimina ricetta -->
                             <form class="delete-form"
                                   action="../controller/cancellaRicettaController.php"
                                   method="POST"
@@ -563,7 +565,6 @@ require_once '../controller/ilMioRistoranteController.php';
                                 </button>
                             </form>
 
-                            <!-- Toggle passi -->
                             <button class="btn-toggle" onclick="togglePassi(this, 'passi-<?php echo $ricetta['id']; ?>')"
                                     title="Mostra/nascondi passi">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -594,10 +595,16 @@ require_once '../controller/ilMioRistoranteController.php';
                                                 <?php if ($passo['durata']): ?>⏱ <?php echo $passo['durata']; ?> min<?php endif; ?>
                                                 <?php if ($passo['nome_cottura']): ?> · <?php echo htmlspecialchars($passo['nome_cottura']); ?><?php endif; ?>
                                             </div>
+
+                                            <?php if (!empty($passo['durata']) && $passo['durata'] > 0): ?>
+                                                <div data-chefly-timer="<?= (int)$passo['id'] ?>"
+                                                     data-durata="<?= (int)$passo['durata'] ?>"
+                                                     data-label="<?= htmlspecialchars($passo['titolo']) ?>">
+                                                </div>
+                                            <?php endif; ?>
                                         </div>
 
                                         <div class="passo-actions">
-                                            <!-- Modifica passo -->
                                             <a href="modificaPasso.php?id_passo=<?php echo $passo['id']; ?>&id_ricetta=<?php echo $ricetta['id']; ?>"
                                                class="btn-icon--sm"
                                                title="Modifica passo">
@@ -607,7 +614,6 @@ require_once '../controller/ilMioRistoranteController.php';
                                                 </svg>
                                             </a>
 
-                                            <!-- Elimina passo -->
                                             <form class="delete-form"
                                                   action="../controller/cancellaPassoController.php"
                                                   method="POST"
@@ -629,7 +635,6 @@ require_once '../controller/ilMioRistoranteController.php';
                                 <?php endforeach; ?>
                             <?php endif; ?>
 
-                            <!-- Aggiungi passo inline -->
                             <div class="passi-footer">
                                 <a href="aggiungiPasso.php?id_ricetta=<?php echo $ricetta['id']; ?>" class="btn-add-passo">
                                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -647,7 +652,6 @@ require_once '../controller/ilMioRistoranteController.php';
 
 </div><!-- /.ristorante-wrap -->
 
-<!-- FAB aggiungi ricetta TODO: visualizzzabile solo se è gia stata inserita una ricetta e da spostare -->
 <a href="aggiungiRicetta.php" class="fab" title="Aggiungi ricetta">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <line x1="12" y1="5" x2="12" y2="19"/>
