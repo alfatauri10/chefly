@@ -55,16 +55,16 @@ if (!$id_ricetta || empty($titolo) || empty($descrizione) || $durata <= 0) {
 // --- INSERIMENTO NEL DB tramite model ---
 $id_passo = insertPasso(
     $conn,
+    $id_utente,
+    $id_ricetta,
     $titolo,
-    $tempoCottura,
-    $tempoRiposo,
     $descrizione,
     $durata,
-    $id_ricetta,
+    $tempoCottura,
+    $tempoRiposo,
     $idCottura,
     $mediaPasso,
-    $ingredienti,
-    $id_utente
+    $ingredienti
 );
 
 if (!$id_passo) {

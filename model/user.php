@@ -116,7 +116,7 @@ function findUserByMail($conn, $mail) {
  * Usata per popolare la sezione profilo di ilMioRistorante.
  */
 function getUtenteById($conn, $id_utente) {
-    $sql = "SELECT id, nome, cognome, userName, mail, biografia, urlFotoProfilo, punteggioAttuale
+    $sql = "SELECT id, nome, cognome, username, mail, biografia, urlFotoProfilo, punteggioAttuale
             FROM utenti
             WHERE id = ?";
     $stmt = $conn->prepare($sql);
