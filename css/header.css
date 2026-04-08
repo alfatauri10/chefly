@@ -1,20 +1,31 @@
-/* HEADER PRINCIPALE CON STILE "CHEFLY" */
+/* RESET GLOBALE BASE (Assicura che non ci siano sfasamenti) */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* HEADER PRINCIPALE E SFONDO */
 .main-header {
     position: fixed;
     top: 0; left: 0;
     width: 100%;
     height: 90px;
+    background: #FFFFFF;
+    box-shadow: 0 4px 20px rgba(26, 16, 8, 0.05);
+    z-index: 1000;
+    font-family: 'DM Sans', sans-serif;
+    border-bottom: 1px solid #EDE8E0;
+}
+
+/* CONTENITORE CENTRALE (Rende tutto vicino e ordinato!) */
+.header-container {
+    max-width: 1200px; /* Limita la larghezza massima su schermi giganti */
+    margin: 0 auto;
+    height: 100%;
+    padding: 0 20px;
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
     align-items: center;
-    padding: 0 3rem;
-    background: #FFFFFF;
-    /* Ombra calda coerente col tema della pagina */
-    box-shadow: 0 4px 20px rgba(26, 16, 8, 0.05);
-    z-index: 1000;
-    box-sizing: border-box;
-    font-family: 'DM Sans', sans-serif; /* Stesso font del corpo */
-    border-bottom: 1px solid #EDE8E0; /* Colore bordo tenue */
+    gap: 20px;
 }
 
 /* 1. LOGO A SINISTRA */
@@ -24,7 +35,7 @@
 }
 
 .header-logo {
-    height: 70px;
+    height: 60px; /* Grandezza ottimale */
     width: auto;
     display: block;
 }
@@ -33,24 +44,24 @@
 .header-center {
     display: flex;
     justify-content: center;
+    width: 100%;
 }
 
 .search-form {
     width: 100%;
-    max-width: 600px;
+    max-width: 500px; /* Dimensione controllata e proporzionata */
 }
 
 .search-wrapper {
     display: flex;
     align-items: center;
-    background: #F5F2EC; /* Riprende i box chiari della pagina */
+    background: #F5F2EC;
     border-radius: 30px;
-    padding: 8px 20px;
+    padding: 10px 20px;
     border: 1px solid #EDE8E0;
     transition: all 0.25s ease;
 }
 
-/* Effetto focus che richiama il colore brand (arancio/ruggine) */
 .search-wrapper:focus-within {
     background: #FFFFFF;
     border-color: #C4622D;
@@ -63,13 +74,11 @@
     background: transparent;
     outline: none;
     font-size: 0.95rem;
-    color: #1A1008; /* Testo scuro */
+    color: #1A1008;
     font-family: 'DM Sans', sans-serif;
 }
 
-.search-bar::placeholder {
-    color: #8B7355; /* Testo secondario */
-}
+.search-bar::placeholder { color: #8B7355; }
 
 /* LENTE DI RICERCA */
 .search-icon-btn {
@@ -80,18 +89,11 @@
     cursor: pointer;
     display: flex;
     align-items: center;
-    outline: none;
+    color: #8B7355;
 }
 
-.search-icon-btn svg {
-    stroke: #8B7355;
-    transition: stroke 0.2s, transform 0.2s;
-}
-
-.search-icon-btn:hover svg {
-    stroke: #C4622D;
-    transform: scale(1.1);
-}
+.search-icon-btn svg { transition: color 0.2s, transform 0.2s; }
+.search-icon-btn:hover svg { color: #C4622D; transform: scale(1.1); }
 
 /* 3. DESTRA: LOGIN E SIGNUP */
 .header-right {
@@ -108,30 +110,20 @@
     font-size: 0.95rem;
     transition: color 0.2s;
 }
-
-.login-link:hover {
-    color: #C4622D;
-}
+.login-link:hover { color: #C4622D; }
 
 .signup-button {
-    background: #1A1008; /* Riprende il bottone scuro della modale */
+    background: #1A1008;
     color: #FFFFFF;
     text-decoration: none;
-    padding: 10px 24px;
+    padding: 10px 20px;
     border-radius: 10px;
     font-weight: 600;
     font-size: 0.95rem;
     transition: background 0.2s, transform 0.1s;
-    letter-spacing: 0.3px;
 }
-
-.signup-button:hover {
-    background: #3a2518;
-}
-
-.signup-button:active {
-    transform: scale(0.98);
-}
+.signup-button:hover { background: #3a2518; }
+.signup-button:active { transform: scale(0.98); }
 
 /* PROFILO E DROPDOWN */
 .profile-pic {
@@ -143,10 +135,7 @@
     border: 2px solid #EDE8E0;
     transition: border-color 0.2s;
 }
-
-.profile-pic:hover {
-    border-color: #C4622D;
-}
+.profile-pic:hover { border-color: #C4622D; }
 
 .profile-menu { position: relative; }
 
@@ -156,16 +145,14 @@
     right: 0;
     background: #FFFFFF;
     border: 1px solid #EDE8E0;
-    border-radius: 16px; /* Radius stile card delle ricette */
+    border-radius: 16px;
     display: none;
     padding: 8px;
     min-width: 200px;
-    box-shadow: 0 10px 30px rgba(26, 16, 8, 0.12); /* Ombra coordinata */
+    box-shadow: 0 10px 30px rgba(26, 16, 8, 0.12);
 }
-
 .dropdown-menu.show { display: block; }
 
-/* Nome utente stilizzato con il font Serif */
 .dropdown-username {
     padding: 12px 16px;
     font-family: 'Playfair Display', serif;
@@ -187,17 +174,9 @@
     border-radius: 10px;
     transition: background 0.2s, color 0.2s;
 }
+.dropdown-item:hover { background: #FFF3ED; color: #C4622D; }
 
-.dropdown-item:hover {
-    background: #FFF3ED;
-    color: #C4622D;
-}
-
-.dropdown-item + .dropdown-item {
-    margin-top: 2px;
-}
-
-/* FIX PER IL BODY */
+/* FIX PER IL BODY (Lascia spazio per l'header fisso) */
 body {
     padding-top: 90px;
     margin: 0;
@@ -205,14 +184,16 @@ body {
 
 /* ── MEDIA QUERIES PER MOBILE ── */
 @media (max-width: 768px) {
-    .main-header {
+    .header-container {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
         height: auto;
-        padding: 15px 1.5rem;
-        gap: 15px;
+        padding: 12px 20px;
+        gap: 12px;
     }
+
+    .main-header { height: auto; }
 
     .header-left { order: 1; }
     .header-right { order: 2; }
@@ -220,11 +201,10 @@ body {
     .header-center {
         order: 3;
         width: 100%;
-        margin-top: 5px;
     }
 
     .search-form { max-width: 100%; }
-    .header-logo { height: 50px; }
+    .header-logo { height: 46px; }
 
-    body { padding-top: 140px; }
+    body { padding-top: 130px; }
 }
