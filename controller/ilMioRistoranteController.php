@@ -21,7 +21,7 @@ if (!$id_utente) {
 // Dati profilo
 $profilo     = getUtenteById($conn, $id_utente);
 $statistiche = getStatisticheUtente($conn, $id_utente);
-var_dump($statistiche); exit();
+exit();
 
 // Ricette con i passi annidati
 $ricette_raw = getListaRicetteUtente($conn, $id_utente);
