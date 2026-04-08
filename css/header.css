@@ -1,49 +1,230 @@
-/* NOME UTENTE IN GRASSETTO NEL MENU (Opzionale per estetica) */
-.dropdown-username {
-    padding: 12px;
+/* HEADER PRINCIPALE CON STILE "CHEFLY" */
+.main-header {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 90px;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    align-items: center;
+    padding: 0 3rem;
+    background: #FFFFFF;
+    /* Ombra calda coerente col tema della pagina */
+    box-shadow: 0 4px 20px rgba(26, 16, 8, 0.05);
+    z-index: 1000;
+    box-sizing: border-box;
+    font-family: 'DM Sans', sans-serif; /* Stesso font del corpo */
+    border-bottom: 1px solid #EDE8E0; /* Colore bordo tenue */
+}
+
+/* 1. LOGO A SINISTRA */
+.header-left {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.header-logo {
+    height: 70px;
+    width: auto;
+    display: block;
+}
+
+/* 2. BARRA DI RICERCA CENTRALE */
+.header-center {
+    display: flex;
+    justify-content: center;
+}
+
+.search-form {
+    width: 100%;
+    max-width: 600px;
+}
+
+.search-wrapper {
+    display: flex;
+    align-items: center;
+    background: #F5F2EC; /* Riprende i box chiari della pagina */
+    border-radius: 30px;
+    padding: 8px 20px;
+    border: 1px solid #EDE8E0;
+    transition: all 0.25s ease;
+}
+
+/* Effetto focus che richiama il colore brand (arancio/ruggine) */
+.search-wrapper:focus-within {
+    background: #FFFFFF;
+    border-color: #C4622D;
+    box-shadow: 0 0 0 3px rgba(196, 98, 45, 0.12);
+}
+
+.search-bar {
+    flex: 1;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 0.95rem;
+    color: #1A1008; /* Testo scuro */
+    font-family: 'DM Sans', sans-serif;
+}
+
+.search-bar::placeholder {
+    color: #8B7355; /* Testo secondario */
+}
+
+/* LENTE DI RICERCA */
+.search-icon-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    margin-left: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    outline: none;
+}
+
+.search-icon-btn svg {
+    stroke: #8B7355;
+    transition: stroke 0.2s, transform 0.2s;
+}
+
+.search-icon-btn:hover svg {
+    stroke: #C4622D;
+    transform: scale(1.1);
+}
+
+/* 3. DESTRA: LOGIN E SIGNUP */
+.header-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px;
+}
+
+.login-link {
+    text-decoration: none;
+    color: #1A1008;
     font-weight: 600;
-    color: #333;
-    border-bottom: 1px solid #F5F5F5; /* Separa il nome dalle voci del menu */
+    font-size: 0.95rem;
+    transition: color 0.2s;
+}
+
+.login-link:hover {
+    color: #C4622D;
+}
+
+.signup-button {
+    background: #1A1008; /* Riprende il bottone scuro della modale */
+    color: #FFFFFF;
+    text-decoration: none;
+    padding: 10px 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background 0.2s, transform 0.1s;
+    letter-spacing: 0.3px;
+}
+
+.signup-button:hover {
+    background: #3a2518;
+}
+
+.signup-button:active {
+    transform: scale(0.98);
+}
+
+/* PROFILO E DROPDOWN */
+.profile-pic {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    object-fit: cover;
+    border: 2px solid #EDE8E0;
+    transition: border-color 0.2s;
+}
+
+.profile-pic:hover {
+    border-color: #C4622D;
+}
+
+.profile-menu { position: relative; }
+
+.dropdown-menu {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background: #FFFFFF;
+    border: 1px solid #EDE8E0;
+    border-radius: 16px; /* Radius stile card delle ricette */
+    display: none;
+    padding: 8px;
+    min-width: 200px;
+    box-shadow: 0 10px 30px rgba(26, 16, 8, 0.12); /* Ombra coordinata */
+}
+
+.dropdown-menu.show { display: block; }
+
+/* Nome utente stilizzato con il font Serif */
+.dropdown-username {
+    padding: 12px 16px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #1A1008;
+    border-bottom: 1px solid #F0ECE6;
+    margin-bottom: 4px;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    text-decoration: none;
+    color: #6B5C48;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 10px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.dropdown-item:hover {
+    background: #FFF3ED;
+    color: #C4622D;
+}
+
+.dropdown-item + .dropdown-item {
+    margin-top: 2px;
+}
+
+/* FIX PER IL BODY */
+body {
+    padding-top: 90px;
+    margin: 0;
 }
 
 /* ── MEDIA QUERIES PER MOBILE ── */
 @media (max-width: 768px) {
-    /* Trasforma la griglia in un flexbox che va a capo */
     .main-header {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
         height: auto;
         padding: 15px 1.5rem;
-        gap: 15px; /* Spazio tra le righe */
+        gap: 15px;
     }
 
-    /* Ordine per tenere Logo a sx e Profilo a dx */
-    .header-left {
-        order: 1;
-    }
+    .header-left { order: 1; }
+    .header-right { order: 2; }
 
-    .header-right {
-        order: 2;
-    }
-
-    /* La barra di ricerca va nella riga sotto e prende il 100% della larghezza */
     .header-center {
         order: 3;
         width: 100%;
         margin-top: 5px;
     }
 
-    .search-form {
-        max-width: 100%; /* Permette alla barra di riempire lo schermo */
-    }
+    .search-form { max-width: 100%; }
+    .header-logo { height: 50px; }
 
-    .header-logo {
-        height: 50px; /* Logo leggermente più piccolo su mobile */
-    }
-
-    /* Aggiusta il padding del body per compensare il nuovo header su due righe */
-    body {
-        padding-top: 140px;
-    }
+    body { padding-top: 140px; }
 }
