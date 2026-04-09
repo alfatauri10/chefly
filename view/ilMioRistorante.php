@@ -599,7 +599,7 @@ require_once '../controller/ilMioRistoranteController.php';
                  alt="Anteprima"
                  class="preview-circle">
         </div>
-        <form action="../controller/aggiornafotoprofiloController.php" method="POST" enctype="multipart/form-data" id="formFoto">
+        <form action="../controller/aggiornafotoprofilocontroller.php" method="POST" enctype="multipart/form-data" id="formFoto">
             <div class="dropzone" id="dropzone">
                 <input type="file" name="foto_profilo" id="inputFoto"
                        accept="image/jpeg,image/png,image/webp,image/gif"
