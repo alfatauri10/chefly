@@ -17,10 +17,304 @@ $tutteLeRicette = getTutteLeRicetteDB($conn);
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/header.css">
     <link rel="stylesheet" href="css/footer.css">
-    <link rel="stylesheet" href="css/index.css">
 
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+        :root {
+            --brown:    #1A1008;
+            --caramel:  #C4622D;
+            --sand:     #F5F0E8;
+            --cream:    #FDFCFA;
+            --border:   #EDE8E0;
+            --muted:    #8B7355;
+        }
 
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--brown);
+            min-height: 100vh;
+        }
+
+        /* ── HERO ──────────────────────────────────────────── */
+        .hero {
+            padding: 64px 40px 48px;
+            text-align: center;
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        .hero-eyebrow {
+            font-size: .72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--caramel);
+            margin-bottom: 16px;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 700;
+            color: var(--brown);
+            line-height: 1.15;
+            margin-bottom: 16px;
+        }
+
+        .hero-title em {
+            font-style: italic;
+            color: var(--caramel);
+        }
+
+        .hero-sub {
+            font-size: .95rem;
+            color: var(--muted);
+            line-height: 1.65;
+        }
+
+        /* ── MASONRY GRID ───────────────────────────────────── */
+        .recipes-section {
+            padding: 0 28px 100px;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .masonry-grid {
+            columns: 4 260px;
+            column-gap: 18px;
+        }
+
+        /* ── CARD ───────────────────────────────────────────── */
+        .recipe-card {
+            break-inside: avoid;
+            display: inline-block;
+            width: 100%;
+            margin-bottom: 18px;
+            border-radius: 18px;
+            overflow: hidden;
+            background: #fff;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: transform .25s ease, box-shadow .25s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .recipe-card:hover {
+            transform: translateY(-5px) rotate(0.4deg);
+            box-shadow: 0 16px 48px rgba(26,16,8,.13);
+        }
+
+        /* Ogni terza card ruota leggermente per effetto "sparso" */
+        .recipe-card:nth-child(3n)   { transform-origin: top right; }
+        .recipe-card:nth-child(3n):hover { transform: translateY(-5px) rotate(-0.4deg); }
+        .recipe-card:nth-child(2n+1) { transform-origin: top left; }
+
+        /* Piccola inclinazione statica per il look "scattered" */
+        .recipe-card:nth-child(4n+1) { margin-top: 32px; }
+        .recipe-card:nth-child(4n+3) { margin-top: -12px; }
+
+        /* ── COVER ──────────────────────────────────────────── */
+        .card-cover {
+            width: 100%;
+            aspect-ratio: 4/3;
+            object-fit: cover;
+            display: block;
+        }
+
+        .card-cover-placeholder {
+            width: 100%;
+            aspect-ratio: 4/3;
+            background: var(--sand);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #D6CFC4;
+        }
+
+        /* ── BODY ───────────────────────────────────────────── */
+        .card-body {
+            padding: 16px 18px 18px;
+        }
+
+        .card-badge {
+            display: inline-block;
+            font-size: .62rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+        }
+
+        .badge-facile    { background: #F0FDF4; color: #166534; }
+        .badge-media     { background: #FFFBEB; color: #92400E; }
+        .badge-difficile { background: #FFF1F0; color: #991B1B; }
+        .badge-esperto   { background: #1A1008; color: #F5E6D3; }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--brown);
+            line-height: 1.3;
+            margin-bottom: 7px;
+        }
+
+        .card-desc {
+            font-size: .8rem;
+            color: var(--muted);
+            line-height: 1.55;
+            margin-bottom: 14px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .card-author {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .author-avatar {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--sand);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .68rem;
+            font-weight: 700;
+            color: var(--caramel);
+            flex-shrink: 0;
+            text-transform: uppercase;
+        }
+
+        .author-name {
+            font-size: .75rem;
+            font-weight: 600;
+            color: var(--brown);
+        }
+
+        .card-date {
+            font-size: .7rem;
+            color: #A89880;
+        }
+
+        /* ── EMPTY STATE ─────────────────────────────────────── */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--muted);
+        }
+
+        .empty-state svg { margin-bottom: 20px; color: #D6CFC4; }
+        .empty-state h3  { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 10px; color: var(--brown); }
+        .empty-state p   { font-size: .9rem; }
+
+        /* ── SECTION DIVIDER ─────────────────────────────────── */
+        .section-divider {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            max-width: 1280px;
+            margin: 0 auto 36px;
+            padding: 0 28px;
+        }
+
+        .section-divider-line {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .section-divider-label {
+            font-size: .7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            color: #C4C0B8;
+        }
+
+        /* ── CTA loggato/non ─────────────────────────────────── */
+        .hero-cta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .btn-primary {
+            background: var(--brown);
+            color: #fff;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-size: .88rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background .2s, transform .1s;
+        }
+        .btn-primary:hover { background: #3a2518; transform: translateY(-1px); }
+
+        .btn-ghost {
+            color: var(--brown);
+            padding: 12px 20px;
+            font-size: .88rem;
+            font-weight: 500;
+            text-decoration: none;
+            opacity: .6;
+            transition: opacity .2s;
+        }
+        .btn-ghost:hover { opacity: 1; }
+
+        /* ── ANIMAZIONE ENTRATA ──────────────────────────────── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .recipe-card {
+            animation: fadeUp .5s ease both;
+        }
+
+        .recipe-card:nth-child(1)  { animation-delay: .05s; }
+        .recipe-card:nth-child(2)  { animation-delay: .10s; }
+        .recipe-card:nth-child(3)  { animation-delay: .15s; }
+        .recipe-card:nth-child(4)  { animation-delay: .20s; }
+        .recipe-card:nth-child(5)  { animation-delay: .25s; }
+        .recipe-card:nth-child(6)  { animation-delay: .30s; }
+        .recipe-card:nth-child(7)  { animation-delay: .35s; }
+        .recipe-card:nth-child(8)  { animation-delay: .40s; }
+        .recipe-card:nth-child(n+9){ animation-delay: .45s; }
+
+        /* ── RESPONSIVE ──────────────────────────────────────── */
+        @media (max-width: 900px) {
+            .masonry-grid { columns: 2 200px; }
+        }
+
+        @media (max-width: 520px) {
+            .masonry-grid { columns: 1; }
+            .hero          { padding: 40px 20px 32px; }
+            .recipes-section { padding: 0 16px 80px; }
+            .recipe-card:nth-child(4n+1),
+            .recipe-card:nth-child(4n+3) { margin-top: 0; }
+        }
+    </style>
 </head>
 <body>
 
