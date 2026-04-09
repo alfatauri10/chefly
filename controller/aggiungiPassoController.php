@@ -75,7 +75,7 @@ if (!$id_passo) {
 // --- REDIRECT in base alla scelta dell'utente ---
 if ($is_ultimo) {
     // Ha dichiarato che è l'ultimo passo → torna alla lista con messaggio di successo
-    header("Location: ../view/listaRicetteUtente.php?success=ricetta_completata");
+    header("Location: ../view/listaRicetteUtente.php?success.php?success=ricetta_completata");
 } else {
     // Aggiunge un altro passo → ricarica la stessa pagina con lo stesso id_ricetta
     header("Location: ../view/aggiungiPasso.php?id_ricetta={$id_ricetta}&success=passo_aggiunto");

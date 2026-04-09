@@ -643,7 +643,7 @@ $titolo_ricetta = $dati_ricetta['titolo'] ?? 'la tua ricetta';
 
             <!-- ===== BOTTONI ===== -->
             <div class="btn-group">
-                <a href="listaRicetteUtente.php" class="btn-back">
+                <a href="ilMioRistorante.php" class="btn-back">
                     ← Le mie ricette
                 </a>
                 <button type="submit" class="btn-submit">
