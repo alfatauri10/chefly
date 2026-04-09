@@ -1,7 +1,8 @@
 <?php
 // controller/registrazioneController.php
-require_once '../include/connessione.php';
-require_once '../model/user.php';
+require_once __DIR__ . '/../include/connessione.php';
+require_once __DIR__ . '/../model/user.php';
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -9,16 +10,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($res == "success") {
         $mail= $_POST['mail'];
-        header("Location: ../view/login.php?msg=successRegister&mail=$mail");
+        header("Location: /view/login.php?msg=successRegister&mail=$mail");
         exit();
     }elseif ($res == "email") {
-        header("Location: ../view/signup.php?error=mail");
+        header("Location: /view/signup.php?error=mail");
         exit();
     }elseif ($res == "username") {
-        header("Location: ../view/signup.php?error=username");
+        header("Location: /view/signup.php?error=username");
         exit();
     }else{
-        header("Location: ../view/signup.php");
+        header("Location: /view/signup.php");
         exit();
     }
 }

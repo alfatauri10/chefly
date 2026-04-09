@@ -17,7 +17,7 @@ include "../include/inizio.php";
         <?php
         if (isset($_GET['error'])) {
             $msg = ($_GET['error'] == 1) ? "Email o password errati." : "Si è verificato un errore.";
-            echo '<div class="alert alert-login-error">' . htmlspecialchars($msg) . '</div>';
+            echo '<div class="alert alert-danger" role="alert">' . htmlspecialchars($msg) . '</div>';
         }
         ?>
 

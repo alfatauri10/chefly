@@ -122,7 +122,7 @@ $lista_tipologie = getTutteLeTipologie($conn);
         </form>
 
         <div class="back-link-container">
-            <a href="listaRicetteUtente.php" class="back-link">
+            <a href="ilMioRistorante.php" class="back-link">
                 &larr; Torna alle mie ricette
             </a>
         </div>

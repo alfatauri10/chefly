@@ -17,42 +17,43 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit();
 }
 
+$id_ricetta   = !empty($_POST['id_ricetta']) ? (int)$_POST['id_ricetta'] : null;
 $titolo       = trim($_POST['titolo']       ?? '');
 $descrizione  = trim($_POST['descrizione']  ?? '');
-// strtolower: il DB ha enum('facile','media','difficile','esperto') tutto minuscolo
 $difficolta   = strtolower(trim($_POST['difficolta'] ?? ''));
 $id_nazionalita = !empty($_POST['id_nazionalita']) ? (int)$_POST['id_nazionalita'] : null;
 $id_tipologia   = !empty($_POST['id_tipologia'])   ? (int)$_POST['id_tipologia']   : null;
-$dataCreazione  = date('Y-m-d');
 
-$file_copertina = $_FILES['copertina']  ?? null;
-$altri_files    = $_FILES['gallery']    ?? [];
+$file_copertina       = $_FILES['copertina']         ?? null;
+$nuovi_file_gallery   = $_FILES['gallery']            ?? [];
+// Array di ID di righe mediaRicette da eliminare, inviato con checkboxes nel form
+$id_foto_da_eliminare = $_POST['foto_da_eliminare']   ?? [];
 
 $difficolta_valide = ['facile', 'media', 'difficile', 'esperto'];
 
-if (empty($titolo) || empty($descrizione) || !in_array($difficolta, $difficolta_valide)) {
-    header("Location: /view/aggiungiRicetta.php?error=campi_mancanti");
+if (!$id_ricetta || empty($titolo) || empty($descrizione) || !in_array($difficolta, $difficolta_valide)) {
+    header("Location: /view/modificaRicetta.php?id_ricetta=" . ($id_ricetta ?? '') . "&error=campi_mancanti");
     exit();
 }
 
-$id_nuova_ricetta = aggiungiRicetta(
+$esito = updateRicettaByID(
     $conn,
-    $descrizione,
-    $titolo,
-    $difficolta,
+    $id_ricetta,
     $id_utente,
-    $dataCreazione,
+    $titolo,
+    $descrizione,
+    $difficolta,
     $id_nazionalita,
     $id_tipologia,
     $file_copertina,
-    $altri_files
+    $nuovi_file_gallery,
+    $id_foto_da_eliminare
 );
 
-if ($id_nuova_ricetta) {
-    // Redirect alla pagina di aggiunta passi, passando l'id della ricetta appena creata
-    header("Location: /view/aggiungiPasso.php?id_ricetta=" . $id_nuova_ricetta);
+if ($esito) {
+    header("Location: /view/ilMioRistorante.php?success=ricetta_modificata");
     exit();
 }
 
-header("Location: /view/aggiungiRicetta.php?error=campi_mancanti");
+header("Location: /view/modificaRicetta.php?id_ricetta=" . $id_ricetta . "&error=errore_modifica");
 exit();

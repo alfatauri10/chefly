@@ -1,7 +1,7 @@
 <?php
 // controller/listaRicetteController.php
 // IMPORTANTE: Questo file non fa redirect. Va incluso all'inizio delle tue View
-// (es. in bacheca.php o in listaRicetteUtente.php)
+// (es. in bacheca.php o in ilMioRistorante.php)
 // Esempio di utilizzo: require_once '../controller/listaRicetteController.php';
 
 // 1. Mettiamo in sicurezza la sessione all'inizio del file
@@ -9,9 +9,9 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// 2. Inclusioni necessarie
-require_once '../include/connessione.php';
-require_once '../model/ricetta.php';
+require_once __DIR__ . '/../include/connessione.php';
+require_once __DIR__ . '/../model/ricetta.php';
+
 
 // Inizializziamo gli array per evitare errori nelle view se il DB è vuoto
 $tutteLeRicette = [];

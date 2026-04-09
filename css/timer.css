@@ -1,0 +1,216 @@
+/* ============================================================
+   timer.css — Chefly Step Timers
+   ============================================================ */
+
+:root {
+    --ct-accent : #a67c52;
+    --ct-dark   : #2d1b10;
+    --ct-bg     : #f9f5f1;
+    --ct-border : #e8dfd5;
+    --ct-text   : #2d1b10;
+    --ct-muted  : #b8a99a;
+}
+
+/* ── Contenitore widget ─────────────────────────────────── */
+.chefly-timer {
+    background   : #fff;
+    border       : 1px solid var(--ct-border);
+    border-radius: 14px;
+    padding      : 16px 20px;
+    margin       : 14px 0;
+    box-shadow   : 0 4px 16px rgba(45, 27, 16, 0.06);
+    transition   : box-shadow 0.2s;
+}
+
+.chefly-timer:hover {
+    box-shadow: 0 6px 24px rgba(45, 27, 16, 0.1);
+}
+
+.ct-inner {
+    display    : flex;
+    align-items: center;
+    gap        : 20px;
+}
+
+/* ── Orologio analogico ─────────────────────────────────── */
+/* BUG FIX: questi stili mancavano completamente, causando il
+   timer non renderizzato (il JS li costruisce ma il CSS non c'era) */
+
+.ct-clock-wrap {
+    flex-shrink: 0;
+    width      : 80px;
+    height     : 80px;
+}
+
+.ct-clock-face {
+    position     : relative;
+    width        : 80px;
+    height       : 80px;
+    border-radius: 50%;
+    background   : #fff;
+    border       : 2px solid var(--ct-border);
+    box-shadow   : 0 4px 20px rgba(45, 27, 16, 0.10);
+    display      : flex;
+    align-items  : center;
+    justify-content: center;
+    transition   : box-shadow 0.4s ease;
+}
+
+.ct-clock-svg {
+    position: absolute;
+    top     : 0;
+    left    : 0;
+    width   : 100%;
+    height  : 100%;
+}
+
+/* Lancetta dei minuti */
+.ct-hand {
+    position        : absolute;
+    bottom          : 50%;
+    left            : 50%;
+    transform-origin: bottom center;
+    border-radius   : 4px;
+}
+
+.ct-hand-minute {
+    width     : 2.5px;
+    height    : 28px;
+    background: var(--ct-dark);
+    margin-left: -1.25px;
+}
+
+/* Lancetta dei secondi */
+.ct-hand-second {
+    width     : 1.5px;
+    height    : 32px;
+    background: var(--ct-accent);
+    margin-left: -0.75px;
+    transition: background 0.4s ease;
+}
+
+/* Perno centrale */
+.ct-clock-center {
+    position     : absolute;
+    top          : 50%;
+    left         : 50%;
+    transform    : translate(-50%, -50%);
+    width        : 7px;
+    height       : 7px;
+    border-radius: 50%;
+    background   : var(--ct-dark);
+    z-index      : 10;
+}
+
+/* Display digitale sovrapposto — posizionato sotto il centro */
+.ct-display {
+    position   : absolute;
+    bottom     : 10px;
+    left       : 50%;
+    transform  : translateX(-50%);
+    font-family: 'Montserrat', sans-serif;
+    font-size  : 0.6rem;
+    font-weight: 700;
+    color      : var(--ct-text);
+    letter-spacing: 0.5px;
+    transition : color 0.4s ease;
+    white-space: nowrap;
+    z-index    : 5;
+}
+
+/* ── Parte testuale + pulsanti ──────────────────────────── */
+.ct-controls {
+    flex: 1;
+}
+
+.ct-label {
+    font-family   : 'Montserrat', sans-serif;
+    font-size     : 0.82rem;
+    font-weight   : 700;
+    color         : var(--ct-dark);
+    margin        : 0 0 2px 0;
+    text-transform: capitalize;
+}
+
+.ct-duration {
+    font-family: 'Montserrat', sans-serif;
+    font-size  : 0.72rem;
+    color      : var(--ct-accent);
+    margin     : 0 0 10px 0;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+/* ── Pulsanti ───────────────────────────────────────────── */
+.ct-btns {
+    display: flex;
+    gap    : 8px;
+    margin-bottom: 8px;
+}
+
+.ct-btn {
+    width           : 34px;
+    height          : 34px;
+    border-radius   : 50%;
+    border          : none;
+    cursor          : pointer;
+    display         : flex;
+    align-items     : center;
+    justify-content : center;
+    transition      : background 0.18s, transform 0.1s;
+    padding         : 0;
+}
+
+.ct-btn svg {
+    width : 14px;
+    height: 14px;
+}
+
+.ct-btn-play {
+    background: var(--ct-dark);
+    color     : #fff;
+}
+.ct-btn-play:hover  { background: #4a3327; }
+.ct-btn-play:active { transform : scale(0.93); }
+
+.ct-btn-pause {
+    background: var(--ct-accent);
+    color     : #fff;
+}
+.ct-btn-pause:hover  { background: #8c6540; }
+.ct-btn-pause:active { transform : scale(0.93); }
+
+.ct-btn-reset {
+    background: var(--ct-bg);
+    color     : var(--ct-muted);
+    border    : 1px solid var(--ct-border);
+}
+.ct-btn-reset:hover  { background: #f0e8de; color: var(--ct-dark); }
+.ct-btn-reset:active { transform : scale(0.93); }
+
+/* ── Etichetta stato ────────────────────────────────────── */
+.ct-state-label {
+    font-family  : 'Montserrat', sans-serif;
+    font-size    : 0.68rem;
+    font-weight  : 600;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+}
+
+.ct-state-idle    { color: var(--ct-muted); }
+.ct-state-running { color: var(--ct-accent); }
+.ct-state-paused  { color: #e67e22; }
+.ct-state-done    { color: #27ae60; }
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 480px) {
+    .ct-inner         { gap: 14px; }
+    .ct-clock-wrap,
+    .ct-clock-face    { width: 64px; height: 64px; }
+    .ct-hand-minute   { height: 22px; }
+    .ct-hand-second   { height: 26px; }
+    .ct-display       { font-size: 0.55rem; }
+    .ct-btn           { width: 30px; height: 30px; }
+    .ct-btn svg       { width: 12px; height: 12px; }
+}
