@@ -723,7 +723,7 @@ $lista_ingredienti = $conn->query($sql_ingredienti)->fetch_all(MYSQLI_ASSOC);
 
         <!-- ══ PULSANTI ══════════════════════════════════ -->
         <div class="form-actions">
-            <a href="aggiungiPasso.php?id_ricetta=<?php echo $id_ricetta; ?>" class="btn-secondary">
+            <a href="ilMioRistorante.php" class="btn-secondary">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
                 Annulla
             </a>
