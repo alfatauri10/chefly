@@ -14,8 +14,6 @@ require_once '../controller/ilMioRistoranteController.php';
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/header.css">
     <link rel="stylesheet" href="../css/footer.css">
-    <link rel="stylesheet" href="../css/timer.css">
-    <script src="../js/timer.js" defer></script>
 
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -577,6 +575,90 @@ require_once '../controller/ilMioRistoranteController.php';
             .fab-tooltip      { display:none; }
             .modal-box        { margin:0 16px; }
         }
+        /* ── PASSO DETAIL INLINE ─────────────────────── */
+        .passo-detail {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed #F0ECE6;
+        }
+        .passo-desc {
+            font-size: .78rem;
+            color: #6B5C48;
+            line-height: 1.55;
+            margin-bottom: 8px;
+        }
+        .passo-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 8px;
+        }
+        .pchip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: .67rem;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 20px;
+        }
+        .pchip--time { background: #FFF3ED; color: #C4622D; }
+        .pchip--fire { background: #FEF9C3; color: #92400E; }
+        .pchip--rest { background: #F0F9FF; color: #0369A1; }
+        .pchip--tech { background: #F5F2EC; color: #6B5C48; }
+        .passo-ings {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 8px;
+        }
+        .ing-tag {
+            font-size: .7rem;
+            background: #FAF8F5;
+            border: 1px solid #EDE8E0;
+            border-radius: 6px;
+            padding: 2px 8px;
+            color: #1A1008;
+            font-weight: 500;
+        }
+        .ing-tag em {
+            font-style: normal;
+            color: #8B7355;
+            margin-left: 3px;
+        }
+        .passo-thumbs {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .passo-thumb {
+            width: 48px;
+            height: 48px;
+            border-radius: 7px;
+            overflow: hidden;
+            flex-shrink: 0;
+            border: 1px solid #EDE8E0;
+            position: relative;
+        }
+        .passo-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .passo-thumb--more::after {
+            content: attr(data-more);
+            position: absolute;
+            inset: 0;
+            background: rgba(26,16,8,.55);
+            color: #FFF;
+            font-size: .65rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
     </style>
 </head>
 <body>
@@ -991,17 +1073,61 @@ require_once '../controller/ilMioRistoranteController.php';
                                 <?php foreach ($ricetta['passi'] as $idx => $passo): ?>
                                     <div class="passo-row">
                                         <div class="passo-num"><?php echo $idx + 1; ?></div>
-                                        <div class="passo-info">
-                                            <div class="passo-title"><?php echo htmlspecialchars($passo['titolo']); ?></div>
-                                            <div class="passo-durata">
-                                                <?php if ($passo['durata']): ?>⏱ <?php echo $passo['durata']; ?> min<?php endif; ?>
-                                                <?php if ($passo['nome_cottura']): ?> · <?php echo htmlspecialchars($passo['nome_cottura']); ?><?php endif; ?>
-                                            </div>
-                                            <?php if (!empty($passo['durata']) && $passo['durata'] > 0): ?>
-                                                <div data-chefly-timer="<?= (int)$passo['id'] ?>"
-                                                     data-durata="<?= (int)$passo['durata'] ?>"
-                                                     data-label="<?= htmlspecialchars($passo['titolo']) ?>"></div>
+                                        <div class="passo-detail">
+
+                                            <?php if (!empty($passo['descrizione'])): ?>
+                                                <p class="passo-desc"><?php echo nl2br(htmlspecialchars(mb_substr($passo['descrizione'], 0, 160) . (mb_strlen($passo['descrizione']) > 160 ? '…' : ''))); ?></p>
                                             <?php endif; ?>
+
+                                            <div class="passo-chips">
+                                                <?php if (!empty($passo['durata'])): ?>
+                                                    <span class="pchip pchip--time">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <?php echo $passo['durata']; ?> min
+            </span>
+                                                <?php endif; ?>
+                                                <?php if (!empty($passo['tempoCottura'])): ?>
+                                                    <span class="pchip pchip--fire">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2c0 0-4 4-4 9a4 4 0 0 0 8 0c0-5-4-9-4-9z"/></svg>
+                Cottura <?php echo $passo['tempoCottura']; ?> min
+            </span>
+                                                <?php endif; ?>
+                                                <?php if (!empty($passo['tempoRiposo'])): ?>
+                                                    <span class="pchip pchip--rest">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M17 17H7a7 7 0 1 1 9.4-9.4"/><polyline points="17 9 17 17 9 17"/></svg>
+                Riposo <?php echo $passo['tempoRiposo']; ?> min
+            </span>
+                                                <?php endif; ?>
+                                                <?php if (!empty($passo['nome_cottura'])): ?>
+                                                    <span class="pchip pchip--tech">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+                <?php echo htmlspecialchars($passo['nome_cottura']); ?>
+            </span>
+                                                <?php endif; ?>
+                                            </div>
+
+                                            <?php if (!empty($passo['ingredienti'])): ?>
+                                                <div class="passo-ings">
+                                                    <?php foreach ($passo['ingredienti'] as $ing): ?>
+                                                        <span class="ing-tag">
+                    <?php echo htmlspecialchars($ing['nome']); ?>
+                                                            <?php if (!empty($ing['dose'])): ?><em><?php echo htmlspecialchars($ing['dose']); ?></em><?php endif; ?>
+                </span>
+                                                    <?php endforeach; ?>
+                                                </div>
+                                            <?php endif; ?>
+
+                                            <?php if (!empty($passo['media'])): ?>
+                                                <div class="passo-thumbs">
+                                                    <?php foreach (array_slice($passo['media'], 0, 4) as $i => $m): ?>
+                                                        <div class="passo-thumb <?php echo ($i === 3 && count($passo['media']) > 4) ? 'passo-thumb--more' : ''; ?>"
+                                                             data-more="+<?php echo count($passo['media']) - 3; ?>">
+                                                            <img src="../<?php echo htmlspecialchars($m['urlMedia']); ?>" alt="">
+                                                        </div>
+                                                    <?php endforeach; ?>
+                                                </div>
+                                            <?php endif; ?>
+
                                         </div>
                                         <div class="passo-actions">
                                             <a href="modificaPasso.php?id_passo=<?php echo $passo['id']; ?>&id_ricetta=<?php echo $ricetta['id']; ?>" class="btn-icon--sm" title="Modifica passo">
