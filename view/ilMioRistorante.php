@@ -690,7 +690,7 @@ require_once '../controller/ilMioRistoranteController.php';
                     <span class="stat-label">Seguiti</span>
                 </div>
             </div>
-            <p class="profile-username"><span>@</span><?php echo htmlspecialchars($profilo['userName']); ?></p>
+            <p class="profile-username"><span>@</span><?php echo htmlspecialchars($profilo['username']); ?></p>
             <?php if (!empty($profilo['biografia'])): ?>
                 <p class="profile-bio"><?php echo nl2br(htmlspecialchars($profilo['biografia'])); ?></p>
             <?php endif; ?>
