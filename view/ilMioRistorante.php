@@ -963,7 +963,7 @@ require_once '../controller/ilMioRistoranteController.php';
                             <div class="recipe-title-text"><?php echo htmlspecialchars($ricetta['titolo']); ?></div>
                             <div class="recipe-meta">
                                 <span class="badge badge--difficolta"><?php echo htmlspecialchars(ucfirst($ricetta['difficolta'])); ?></span>
-                                <span class="badge badge--steps"><?php echo count($ricetta['passi']); ?> passo<?php echo count($ricetta['passi']) !== 1 ? 'i' : ''; ?></span>
+                                <span class="badge badge--steps"><?php echo count($ricetta['passi']); ?> pass<?php echo count($ricetta['passi']) !== 1 ? 'i' : 'o'; ?></span>
                             </div>
                         </div>
                         <div class="recipe-actions">
