@@ -1,5 +1,7 @@
+<!-- include/footer.php — usa chefly.css come stile globale -->
 <footer class="main-footer">
     <div class="footer-container">
+
         <div class="footer-brand">
             <a href="/index.php">
                 <img src="/img/logo.png" alt="Chefly" class="footer-logo">
@@ -8,15 +10,12 @@
                 Scopri, cucina e condividi le tue ricette preferite. Unisciti alla più grande community di appassionati di cucina.
             </p>
             <div class="social-icons">
-                <!-- Instagram -->
-                <a href="https://www.instagram.com/chefly67_?igsh=MW0yeHBoNW9rZXBhMA%3D%3D&utm_source=qr" class="social-icon" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                <a href="https://www.instagram.com/chefly67_?igsh=MW0yeHBoNW9rZXBhMA%3D%3D" class="social-icon" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
                 </a>
-
-                <!-- TikTok -->
                 <a href="https://tiktok.com" class="social-icon" aria-label="TikTok" target="_blank" rel="noopener noreferrer">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/>
                     </svg>
                 </a>
             </div>
@@ -39,10 +38,10 @@
             <a href="/privacy-policy.php">Privacy Policy</a>
             <a href="/termini.php">Termini di Servizio</a>
         </div>
+
     </div>
 
     <div class="footer-bottom">
         <p>&copy; <?php echo date("Y"); ?> Chefly. Tutti i diritti riservati.</p>
     </div>
 </footer>
-
