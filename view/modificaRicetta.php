@@ -15,16 +15,19 @@ if (!$ricetta || $ricetta['idCreatore'] != $id_utente) { header("Location: ilMio
 $lista_nazionalita = getTutteLeNazionalita($conn);
 $lista_tipologie   = getTutteLeTipologie($conn);
 
+// FIX: get_result() chiamato una sola volta e salvato in variabile
 $sql_gallery = "SELECT id, urlMedia, isCopertina FROM mediaRicette WHERE idRicetta=? ORDER BY id ASC";
 $stmt = $conn->prepare($sql_gallery);
 $stmt->bind_param("i", $id_ricetta);
 $stmt->execute();
-$foto_esistenti = [];
+$result_gallery = $stmt->get_result(); // ← FIX: salvato in variabile, non chiamato nel loop
+$foto_esistenti      = [];
 $copertina_esistente = null;
-while ($row = $stmt->get_result()->fetch_assoc()) {
+while ($row = $result_gallery->fetch_assoc()) {
     if ($row['isCopertina']) $copertina_esistente = $row;
     else $foto_esistenti[] = $row;
 }
+$stmt->close();
 ?>
 <!DOCTYPE html>
 <html lang="it">
@@ -72,6 +75,10 @@ while ($row = $stmt->get_result()->fetch_assoc()) {
         .file-zone-icon { width:36px; height:36px; background:var(--sand); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; color:var(--caramel); }
         .file-zone p   { font-size:.82rem; color:#6B5C48; margin-bottom:3px; font-weight:500; }
         .file-zone small { font-size:.72rem; color:var(--muted-light); }
+
+        /* copertina obbligatoria: evidenzia zona se mancante */
+        .file-zone--required { border-color: #E8B99A; }
+        .required-badge { display:inline-block; font-size:.65rem; font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:#C4622D; background:#FFF3ED; border:1px solid #E8B99A; border-radius:20px; padding:2px 8px; margin-left:6px; vertical-align:middle; }
 
         .form-actions { display:flex; gap:14px; margin-top:8px; }
         .btn-submit-save { flex:1; padding:14px; background:var(--caramel); color:#FFF; border:none; border-radius:12px; font-family:var(--font-sans); font-size:.92rem; font-weight:600; cursor:pointer; transition:background .2s, transform .1s; display:flex; align-items:center; justify-content:center; gap:7px; }
@@ -139,19 +146,21 @@ while ($row = $stmt->get_result()->fetch_assoc()) {
                         <div></div>
                     </div>
                     <div class="form-row" style="margin-top:16px;">
+                        <!-- Nazionalità OBBLIGATORIA -->
                         <div class="form-group" style="margin-bottom:0;">
-                            <label class="form-label">Nazionalità <span class="opt">(opzionale)</span></label>
-                            <select name="id_nazionalita" class="form-control">
-                                <option value="">Nessuna</option>
+                            <label class="form-label">Nazionalità *</label>
+                            <select name="id_nazionalita" class="form-control" required>
+                                <option value="" disabled <?php echo empty($ricetta['idNazionalita'])?'selected':''; ?>>Seleziona</option>
                                 <?php foreach ($lista_nazionalita as $n): ?>
                                     <option value="<?php echo $n['id']; ?>" <?php echo ($ricetta['idNazionalita']==$n['id'])?'selected':''; ?>><?php echo htmlspecialchars($n['nome']); ?> (<?php echo htmlspecialchars($n['sigla']); ?>)</option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
+                        <!-- Tipologia OBBLIGATORIA -->
                         <div class="form-group" style="margin-bottom:0;">
-                            <label class="form-label">Tipologia <span class="opt">(opzionale)</span></label>
-                            <select name="id_tipologia" class="form-control">
-                                <option value="">Nessuna</option>
+                            <label class="form-label">Tipologia *</label>
+                            <select name="id_tipologia" class="form-control" required>
+                                <option value="" disabled <?php echo empty($ricetta['idTipologia'])?'selected':''; ?>>Seleziona</option>
                                 <?php foreach ($lista_tipologie as $t): ?>
                                     <option value="<?php echo $t['id']; ?>" <?php echo ($ricetta['idTipologia']==$t['id'])?'selected':''; ?>><?php echo htmlspecialchars($t['nome']); ?></option>
                                 <?php endforeach; ?>
@@ -161,39 +170,46 @@ while ($row = $stmt->get_result()->fetch_assoc()) {
                 </div>
             </div>
 
-            <!-- Copertina -->
+            <!-- Copertina OBBLIGATORIA -->
             <div class="card" style="margin-bottom:18px;">
                 <div class="card-header">
                     <div class="card-header-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
-                    <span class="card-header-title">Foto di copertina</span>
+                    <span class="card-header-title">Foto di copertina<?php if (!$copertina_esistente): ?> <span class="required-badge">Richiesta</span><?php endif; ?></span>
                 </div>
                 <div class="card-body">
-                    <div class="current-cover">
-                        <?php if ($copertina_esistente): ?>
+                    <?php if ($copertina_esistente): ?>
+                        <!-- Copertina già presente: mostrala e permetti sostituzione (opzionale) -->
+                        <div class="current-cover">
                             <img src="../<?php echo htmlspecialchars($copertina_esistente['urlMedia']); ?>" alt="Copertina attuale">
-                        <?php else: ?>
-                            <div class="current-cover-placeholder"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
-                        <?php endif; ?>
-                        <div>
-                            <div class="current-cover-label">Copertina attuale</div>
-                            <div class="current-cover-name"><?php echo $copertina_esistente ? basename($copertina_esistente['urlMedia']) : 'Nessuna copertina'; ?></div>
-                            <div class="current-cover-hint">Carica una nuova immagine per sostituirla</div>
+                            <div>
+                                <div class="current-cover-label">Copertina attuale</div>
+                                <div class="current-cover-name"><?php echo basename($copertina_esistente['urlMedia']); ?></div>
+                                <div class="current-cover-hint">Carica una nuova immagine per sostituirla (opzionale)</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="file-zone">
-                        <input type="file" name="copertina" accept="image/*">
-                        <div class="file-zone-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
-                        <p>Clicca per scegliere una nuova copertina</p>
-                        <small>JPG, PNG, WEBP — consigliata almeno 800×600px</small>
-                    </div>
+                        <div class="file-zone">
+                            <input type="file" name="copertina" accept="image/*">
+                            <div class="file-zone-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+                            <p>Clicca per scegliere una nuova copertina</p>
+                            <small>JPG, PNG, WEBP — consigliata almeno 800×600px</small>
+                        </div>
+                    <?php else: ?>
+                        <!-- Nessuna copertina: upload obbligatorio -->
+                        <div class="file-zone file-zone--required">
+                            <input type="file" name="copertina" accept="image/*" required>
+                            <div class="file-zone-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+                            <p>Clicca per scegliere la copertina <strong>*</strong></p>
+                            <small>JPG, PNG, WEBP — consigliata almeno 800×600px</small>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
 
-            <!-- Galleria -->
+            <!-- Galleria OPZIONALE -->
             <div class="card" style="margin-bottom:24px;">
                 <div class="card-header">
                     <div class="card-header-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
-                    <span class="card-header-title">Galleria fotografica</span>
+                    <span class="card-header-title">Galleria fotografica <span class="opt" style="font-weight:400;text-transform:none;letter-spacing:0;font-size:.8rem;">(opzionale)</span></span>
                 </div>
                 <div class="card-body">
                     <?php if (!empty($foto_esistenti)): ?>

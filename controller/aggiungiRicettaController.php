@@ -1,4 +1,5 @@
 <?php
+// controller/aggiungiRicettaController.php
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -17,20 +18,31 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit();
 }
 
-$titolo       = trim($_POST['titolo']       ?? '');
-$descrizione  = trim($_POST['descrizione']  ?? '');
-// strtolower: il DB ha enum('facile','media','difficile','esperto') tutto minuscolo
-$difficolta   = strtolower(trim($_POST['difficolta'] ?? ''));
+$titolo         = trim($_POST['titolo']      ?? '');
+$descrizione    = trim($_POST['descrizione'] ?? '');
+$difficolta     = strtolower(trim($_POST['difficolta'] ?? ''));
 $id_nazionalita = !empty($_POST['id_nazionalita']) ? (int)$_POST['id_nazionalita'] : null;
 $id_tipologia   = !empty($_POST['id_tipologia'])   ? (int)$_POST['id_tipologia']   : null;
 $dataCreazione  = date('Y-m-d');
 
-$file_copertina = $_FILES['copertina']  ?? null;
-$altri_files    = $_FILES['gallery']    ?? [];
+$file_copertina = $_FILES['copertina'] ?? null;
+$altri_files    = $_FILES['gallery']   ?? [];
 
 $difficolta_valide = ['facile', 'media', 'difficile', 'esperto'];
 
-if (empty($titolo) || empty($descrizione) || !in_array($difficolta, $difficolta_valide)) {
+// Validazione: tutti i campi obbligatori inclusi nazionalità, tipologia e copertina
+$copertina_ok = $file_copertina
+    && isset($file_copertina['error'])
+    && $file_copertina['error'] === UPLOAD_ERR_OK;
+
+if (
+    empty($titolo)
+    || empty($descrizione)
+    || !in_array($difficolta, $difficolta_valide)
+    || empty($id_nazionalita)
+    || empty($id_tipologia)
+    || !$copertina_ok
+) {
     header("Location: /view/aggiungiRicetta.php?error=campi_mancanti");
     exit();
 }
@@ -49,7 +61,6 @@ $id_nuova_ricetta = aggiungiRicetta(
 );
 
 if ($id_nuova_ricetta) {
-    // Redirect alla pagina di aggiunta passi, passando l'id della ricetta appena creata
     header("Location: /view/aggiungiPasso.php?id_ricetta=" . $id_nuova_ricetta);
     exit();
 }

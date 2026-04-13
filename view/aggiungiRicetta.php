@@ -27,6 +27,7 @@ $lista_tipologie   = getTutteLeTipologie($conn);
         .file-zone-icon { width:36px; height:36px; background:var(--sand); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; color:var(--caramel); }
         .file-zone p   { font-size:.82rem; color:#6B5C48; margin-bottom:3px; font-weight:500; }
         .file-zone small { font-size:.72rem; color:var(--muted-light); }
+        .file-zone--required { border-color:#E8B99A; }
 
         .form-actions { display:flex; gap:14px; margin-top:8px; }
         .btn-submit-full { flex:1; padding:14px; background:var(--caramel); color:#FFF; border:none; border-radius:12px; font-family:var(--font-sans); font-size:.95rem; font-weight:600; cursor:pointer; transition:background .2s, transform .1s; }
@@ -88,7 +89,7 @@ $lista_tipologie   = getTutteLeTipologie($conn);
                 </div>
             </div>
 
-            <!-- Classificazione -->
+            <!-- Classificazione OBBLIGATORIA -->
             <div class="card" style="margin-bottom:20px;">
                 <div class="card-header">
                     <div class="card-header-icon">
@@ -99,18 +100,18 @@ $lista_tipologie   = getTutteLeTipologie($conn);
                 <div class="card-body">
                     <div class="form-row">
                         <div class="form-group" style="margin-bottom:0;">
-                            <label class="form-label">Nazionalità <span class="opt">(opzionale)</span></label>
-                            <select name="id_nazionalita" class="form-control">
-                                <option value="">Nessuna</option>
+                            <label class="form-label">Nazionalità *</label>
+                            <select name="id_nazionalita" class="form-control" required>
+                                <option value="" disabled selected>Seleziona</option>
                                 <?php foreach ($lista_nazionalita as $n): ?>
                                     <option value="<?php echo $n['id']; ?>"><?php echo htmlspecialchars($n['nome']); ?> (<?php echo htmlspecialchars($n['sigla']); ?>)</option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="form-group" style="margin-bottom:0;">
-                            <label class="form-label">Tipologia <span class="opt">(opzionale)</span></label>
-                            <select name="id_tipologia" class="form-control">
-                                <option value="">Nessuna</option>
+                            <label class="form-label">Tipologia *</label>
+                            <select name="id_tipologia" class="form-control" required>
+                                <option value="" disabled selected>Seleziona</option>
                                 <?php foreach ($lista_tipologie as $t): ?>
                                     <option value="<?php echo $t['id']; ?>"><?php echo htmlspecialchars($t['nome']); ?></option>
                                 <?php endforeach; ?>
@@ -120,7 +121,7 @@ $lista_tipologie   = getTutteLeTipologie($conn);
                 </div>
             </div>
 
-            <!-- Foto -->
+            <!-- Foto: copertina OBBLIGATORIA, galleria opzionale -->
             <div class="card" style="margin-bottom:28px;">
                 <div class="card-header">
                     <div class="card-header-icon">
@@ -130,13 +131,13 @@ $lista_tipologie   = getTutteLeTipologie($conn);
                 </div>
                 <div class="card-body">
                     <div class="form-group">
-                        <label class="form-label">Copertina <span class="opt">(opzionale)</span></label>
-                        <div class="file-zone">
-                            <input type="file" name="copertina" accept="image/*">
+                        <label class="form-label">Copertina *</label>
+                        <div class="file-zone file-zone--required">
+                            <input type="file" name="copertina" accept="image/*" required>
                             <div class="file-zone-icon">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                             </div>
-                            <p>Clicca o trascina la foto di copertina</p>
+                            <p>Clicca o trascina la foto di copertina <strong>*</strong></p>
                             <small>JPG, PNG, WEBP — consigliata almeno 800×600px</small>
                         </div>
                     </div>

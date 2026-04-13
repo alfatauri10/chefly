@@ -1,4 +1,5 @@
 <?php
+// controller/modificaRicettaController.php
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -17,21 +18,28 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit();
 }
 
-$id_ricetta   = !empty($_POST['id_ricetta']) ? (int)$_POST['id_ricetta'] : null;
-$titolo       = trim($_POST['titolo']       ?? '');
-$descrizione  = trim($_POST['descrizione']  ?? '');
-$difficolta   = strtolower(trim($_POST['difficolta'] ?? ''));
+$id_ricetta     = !empty($_POST['id_ricetta'])  ? (int)$_POST['id_ricetta']  : null;
+$titolo         = trim($_POST['titolo']         ?? '');
+$descrizione    = trim($_POST['descrizione']    ?? '');
+$difficolta     = strtolower(trim($_POST['difficolta'] ?? ''));
 $id_nazionalita = !empty($_POST['id_nazionalita']) ? (int)$_POST['id_nazionalita'] : null;
 $id_tipologia   = !empty($_POST['id_tipologia'])   ? (int)$_POST['id_tipologia']   : null;
 
-$file_copertina       = $_FILES['copertina']         ?? null;
-$nuovi_file_gallery   = $_FILES['gallery']            ?? [];
-// Array di ID di righe mediaRicette da eliminare, inviato con checkboxes nel form
-$id_foto_da_eliminare = $_POST['foto_da_eliminare']   ?? [];
+$file_copertina       = $_FILES['copertina']       ?? null;
+$nuovi_file_gallery   = $_FILES['gallery']          ?? [];
+$id_foto_da_eliminare = $_POST['foto_da_eliminare'] ?? [];
 
 $difficolta_valide = ['facile', 'media', 'difficile', 'esperto'];
 
-if (!$id_ricetta || empty($titolo) || empty($descrizione) || !in_array($difficolta, $difficolta_valide)) {
+// Nazionalità e tipologia ora OBBLIGATORIE
+if (
+    !$id_ricetta
+    || empty($titolo)
+    || empty($descrizione)
+    || !in_array($difficolta, $difficolta_valide)
+    || empty($id_nazionalita)
+    || empty($id_tipologia)
+) {
     header("Location: /view/modificaRicetta.php?id_ricetta=" . ($id_ricetta ?? '') . "&error=campi_mancanti");
     exit();
 }
