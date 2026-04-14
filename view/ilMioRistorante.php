@@ -479,21 +479,8 @@ require_once '../controller/ilMioRistoranteController.php';
 
                 <!-- Sinistra: icona + testo -->
                 <div class="timer-accordion-left">
-                    <div class="timer-section-icon" style="width:40px;height:40px;background:#FFF3ED;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#C4622D;flex-shrink:0;">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    </div>
-                    <div>
-                        <div style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;color:#1A1008;">Personalizza il tuo orologio</div>
-                        <div style="font-size:.75rem;color:#8B7355;margin-top:2px;" id="timerAccordionSub">Clicca per modificare i colori</div>
-                    </div>
-                </div>
-
-                <!-- Destra: mini orologio + freccia -->
-                <div class="timer-accordion-right">
-                    <!-- MINI OROLOGIO SVG -->
                     <div class="mini-clock" id="miniClock" style="background:<?php echo htmlspecialchars($timer['coloreSfondo']); ?>;">
                         <svg class="mini-clock-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                            <!-- Segni minuti -->
                             <?php for ($i = 0; $i < 12; $i++):
                                 $angle = $i * 30;
                                 $rad = $angle * M_PI / 180;
@@ -506,16 +493,21 @@ require_once '../controller/ilMioRistoranteController.php';
                                       stroke-width="3" stroke-linecap="round" class="mini-mark"/>
                             <?php endfor; ?>
                         </svg>
-                        <!-- Lancetta minuti -->
                         <div class="mini-hand mini-hand-min" id="miniHandMin"
                              style="background:<?php echo htmlspecialchars($timer['coloreLancetta']); ?>;"></div>
-                        <!-- Lancetta secondi -->
                         <div class="mini-hand mini-hand-sec" id="miniHandSec"
                              style="background:<?php echo htmlspecialchars($timer['coloreLancetta']); ?>;"></div>
-                        <!-- Perno -->
                         <div class="mini-center" style="background:<?php echo htmlspecialchars($timer['coloreLancetta']); ?>;"></div>
                     </div>
+                    <div>
+                        <div style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;color:#1A1008;">Personalizza il tuo orologio</div>
+                        <div style="font-size:.75rem;color:#8B7355;margin-top:2px;" id="timerAccordionSub">Clicca per modificare i colori</div>
+                    </div>
+                </div>
 
+                <!-- Destra: mini orologio + freccia -->
+                <div class="timer-accordion-right">
+                    <!-- MINI OROLOGIO SVG -->
                     <!-- Freccia toggle -->
                     <button class="btn-toggle" id="timerToggleBtn" style="border:1px solid #EDE8E0;background:#FAF8F5;" title="Apri/Chiudi">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" id="timerArrow"><polyline points="6 9 12 15 18 9"/></svg>
