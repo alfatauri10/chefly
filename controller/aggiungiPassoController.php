@@ -16,25 +16,27 @@ if (!$id_utente) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: ../view/listaRicetteUtente.php");
+    header("Location: ../view/ilMioRistorante.php");
     exit();
 }
 
 // --- RECUPERO DATI DAL FORM ---
-$id_ricetta    = isset($_POST['id_ricetta'])    ? (int)$_POST['id_ricetta']    : null;
-$numero_passo  = isset($_POST['numero_passo'])  ? (int)$_POST['numero_passo']  : 1;
-$titolo        = trim($_POST['titolo']        ?? '');
-$descrizione   = trim($_POST['descrizione']   ?? '');
-$durata        = !empty($_POST['durata'])        ? (int)$_POST['durata']        : 0;
-$tempoCottura  = !empty($_POST['tempoCottura']) ? (int)$_POST['tempoCottura']  : null;
-$tempoRiposo   = !empty($_POST['tempoRiposo'])  ? (int)$_POST['tempoRiposo']   : null;
-$idCottura     = !empty($_POST['idCottura'])    ? (int)$_POST['idCottura']     : null;
-$is_ultimo     = isset($_POST['is_ultimo_passo']) && $_POST['is_ultimo_passo'] == '1';
+$id_ricetta   = isset($_POST['id_ricetta'])   ? (int)$_POST['id_ricetta']   : null;
+$titolo       = trim($_POST['titolo']         ?? '');
+$descrizione  = trim($_POST['descrizione']    ?? '');
+$durata       = !empty($_POST['durata'])       ? (int)$_POST['durata']       : 0;
+$tempoCottura = !empty($_POST['tempoCottura']) ? (int)$_POST['tempoCottura'] : null;
+$tempoRiposo  = !empty($_POST['tempoRiposo'])  ? (int)$_POST['tempoRiposo']  : null;
+$idCottura    = !empty($_POST['idCottura'])    ? (int)$_POST['idCottura']    : null;
+$is_ultimo    = isset($_POST['is_ultimo_passo']) && $_POST['is_ultimo_passo'] == '1';
+
+// Posizione scelta dall'utente (null = in fondo)
+$posizione    = isset($_POST['posizione']) && $_POST['posizione'] !== '' ? (int)$_POST['posizione'] : null;
 
 // File media del passo
 $mediaPasso = $_FILES['mediaPasso'] ?? [];
 
-// Ingredienti: il form invia ingredienti[id][] e ingredienti[dose][]
+// Ingredienti
 $ingredienti_input = $_POST['ingredienti'] ?? [];
 $ingredienti = [];
 if (!empty($ingredienti_input['id']) && is_array($ingredienti_input['id'])) {
@@ -52,7 +54,7 @@ if (!$id_ricetta || empty($titolo) || empty($descrizione) || $durata <= 0) {
     exit();
 }
 
-// --- INSERIMENTO NEL DB tramite model ---
+// --- INSERIMENTO NEL DB ---
 $id_passo = insertPasso(
     $conn,
     $id_utente,
@@ -64,7 +66,8 @@ $id_passo = insertPasso(
     $tempoRiposo,
     $idCottura,
     $mediaPasso,
-    $ingredienti
+    $ingredienti,
+    $posizione  // null = in fondo, numero = in posizione specifica
 );
 
 if (!$id_passo) {
@@ -72,13 +75,13 @@ if (!$id_passo) {
     exit();
 }
 
-// --- REDIRECT in base alla scelta dell'utente ---
+// Riordina sempre dopo l'inserimento per avere sequenza pulita
+riordinaPassi($conn, $id_ricetta);
+
+// --- REDIRECT ---
 if ($is_ultimo) {
-    // Ha dichiarato che è l'ultimo passo → torna alla lista con messaggio di successo
-    header("Location: ../view/ilMioRistorante.php?success.php?success=ricetta_completata");
+    header("Location: ../view/ilMioRistorante.php?success=ricetta_completata");
 } else {
-    // Aggiunge un altro passo → ricarica la stessa pagina con lo stesso id_ricetta
     header("Location: ../view/aggiungiPasso.php?id_ricetta={$id_ricetta}&success=passo_aggiunto");
 }
 exit();
-?>
