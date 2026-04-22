@@ -8,11 +8,9 @@ require_once '../model/passo.php';
 $id_ricetta = isset($_GET['id_ricetta']) ? (int)$_GET['id_ricetta'] : null;
 if (!$id_ricetta) { header("Location: ilMioRistorante.php"); exit(); }
 
-$sql_count = "SELECT COUNT(*) as tot FROM passi WHERE idRicetta = ?";
-$stmt = $conn->prepare($sql_count);
-$stmt->bind_param("i", $id_ricetta);
-$stmt->execute();
-$numero_passo = ($stmt->get_result()->fetch_assoc()['tot'] ?? 0) + 1;
+// Passi già esistenti (ordinati per ordine)
+$passi_esistenti = getListaPassiByIdRicetta($conn, $id_ricetta);
+$numero_totale   = count($passi_esistenti);
 
 $lista_cotture     = $conn->query("SELECT id, nome FROM anagCotture ORDER BY nome ASC")->fetch_all(MYSQLI_ASSOC);
 $lista_ingredienti = $conn->query("SELECT id, nome FROM anagIngredienti ORDER BY nome ASC")->fetch_all(MYSQLI_ASSOC);
@@ -27,7 +25,7 @@ $titolo_ricetta = $stmt2->get_result()->fetch_assoc()['titolo'] ?? 'la tua ricet
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Passo <?php echo $numero_passo; ?> — Chefly</title>
+    <title>Aggiungi Passo — Chefly</title>
     <link rel="stylesheet" href="../css/chefly.css">
     <style>
         .step-wrap { max-width:680px; margin:0 auto; padding:48px 20px 100px; }
@@ -36,13 +34,149 @@ $titolo_ricetta = $stmt2->get_result()->fetch_assoc()['titolo'] ?? 'la tua ricet
         .step-progress-meta { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
         .step-context { font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--caramel); }
         .step-badge   { background:var(--brown); color:#FFF; font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; padding:4px 14px; border-radius:var(--radius-pill); }
-        .step-bar     { width:100%; height:3px; background:var(--border); border-radius:2px; overflow:hidden; }
-        .step-bar-fill{ height:100%; background:linear-gradient(90deg,var(--caramel),var(--brown)); width:<?php echo min(100,$numero_passo*20); ?>%; border-radius:2px; transition:width .4s ease; }
 
         .page-title-row { margin-bottom:32px; }
         .page-title-row h1 { font-family:var(--font-serif); font-size:1.9rem; font-weight:700; color:var(--brown); margin-bottom:6px; }
         .page-title-row p  { font-size:.88rem; color:var(--muted); line-height:1.55; }
 
+        /* ── SELETTORE POSIZIONE ── */
+        .position-selector { margin-bottom:0; }
+        .position-label { font-size:.77rem; font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:#6B5C48; margin-bottom:12px; display:block; }
+        .position-label .opt { font-weight:400; color:var(--muted-light); text-transform:none; letter-spacing:0; }
+
+        .position-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        /* Slot "Inserisci qui" — appare tra i passi esistenti e alla fine */
+        .insert-slot {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 14px;
+            height: 0;
+            overflow: hidden;
+            transition: height .2s ease, padding .2s ease, background .15s;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            width: 100%;
+            text-align: left;
+        }
+        .insert-slot.active,
+        .insert-slot:hover {
+            height: 44px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        .insert-slot.active {
+            background: #FFF3ED;
+        }
+        .insert-slot-line {
+            flex: 1;
+            height: 2px;
+            border-radius: 1px;
+            background: #E8B99A;
+        }
+        .insert-slot-label {
+            font-size: .72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--caramel);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .insert-slot-badge {
+            width: 20px; height: 20px;
+            border-radius: 50%;
+            background: var(--caramel);
+            color: #FFF;
+            font-size: .65rem;
+            font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* Riga passo esistente */
+        .existing-step-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: var(--white);
+            border-top: 1px solid var(--border-light);
+            pointer-events: none;
+        }
+        .existing-step-row:first-child { border-top: none; }
+        .step-num {
+            width: 26px; height: 26px;
+            border-radius: 50%;
+            background: var(--sand);
+            color: var(--muted);
+            font-size: .72rem; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .step-name {
+            font-size: .88rem;
+            font-weight: 500;
+            color: var(--brown);
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .step-duration {
+            font-size: .72rem;
+            color: var(--muted-light);
+            flex-shrink: 0;
+        }
+
+        /* Slot "in fondo" — selezionato di default */
+        .append-slot {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            cursor: pointer;
+            background: var(--cream);
+            border-top: 1px solid var(--border-light);
+            border: none;
+            width: 100%;
+            text-align: left;
+            transition: background .15s;
+        }
+        .append-slot:hover { background: #FFF3ED; }
+        .append-slot.active { background: #FFF3ED; }
+        .append-slot-icon {
+            width: 26px; height: 26px;
+            border-radius: 50%;
+            border: 2px dashed #E8B99A;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--caramel);
+            flex-shrink: 0;
+        }
+        .append-slot-label {
+            font-size: .85rem;
+            font-weight: 600;
+            color: var(--caramel);
+        }
+        .append-slot-sub {
+            font-size: .72rem;
+            color: var(--muted-light);
+            margin-left: auto;
+        }
+
+        /* Input nascosto che registra la scelta */
+        #inputPosizione { display: none; }
+
+        /* ── (resto invariato) ── */
         .ingredienti-list { display:flex; flex-direction:column; gap:10px; margin-bottom:12px; }
         .ingrediente-row  { display:grid; grid-template-columns:1fr 1fr auto; gap:10px; align-items:center; background:var(--cream); border:1px solid var(--border); border-radius:10px; padding:10px 12px; }
         .ingrediente-row select,
@@ -91,14 +225,13 @@ $titolo_ricetta = $stmt2->get_result()->fetch_assoc()['titolo'] ?? 'la tua ricet
         <div class="step-progress">
             <div class="step-progress-meta">
                 <span class="step-context"><?php echo htmlspecialchars($titolo_ricetta); ?></span>
-                <span class="step-badge">Passo <?php echo $numero_passo; ?></span>
+                <span class="step-badge"><?php echo $numero_totale; ?> passo<?php echo $numero_totale !== 1 ? 'i' : ''; ?> già presenti</span>
             </div>
-            <div class="step-bar"><div class="step-bar-fill"></div></div>
         </div>
 
         <div class="page-title-row">
-            <h1>Aggiungi il passo <?php echo $numero_passo; ?></h1>
-            <p>Descrivi questa fase della ricetta. Potrai aggiungere altri passi o concludere al termine.</p>
+            <h1>Aggiungi un passo</h1>
+            <p>Scegli dove inserire il nuovo passo nella sequenza della ricetta.</p>
         </div>
 
         <?php if (isset($_GET['success']) && $_GET['success'] === 'passo_aggiunto'): ?>
@@ -109,8 +242,68 @@ $titolo_ricetta = $stmt2->get_result()->fetch_assoc()['titolo'] ?? 'la tua ricet
         <?php endif; ?>
 
         <form action="../controller/aggiungiPassoController.php" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="id_ricetta"    value="<?php echo $id_ricetta; ?>">
-            <input type="hidden" name="numero_passo"  value="<?php echo $numero_passo; ?>">
+            <input type="hidden" name="id_ricetta" value="<?php echo $id_ricetta; ?>">
+            <input type="hidden" name="posizione" id="inputPosizione" value="">
+
+            <!-- SELETTORE POSIZIONE -->
+            <div class="card" style="margin-bottom:18px;">
+                <div class="card-header">
+                    <div class="card-header-icon">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                    </div>
+                    <span class="card-header-title">Posizione nella ricetta</span>
+                </div>
+                <div class="card-body" style="padding:0;">
+                    <div class="position-list" id="positionList">
+
+                        <?php if (!empty($passi_esistenti)): ?>
+                            <!-- Slot PRIMA del primo passo -->
+                            <button type="button" class="insert-slot" data-pos="1" onclick="selezionaPosizione(1, this)">
+                                <div class="insert-slot-badge">+</div>
+                                <div class="insert-slot-line"></div>
+                                <span class="insert-slot-label">Prima del passo 1</span>
+                                <div class="insert-slot-line"></div>
+                            </button>
+
+                            <?php foreach ($passi_esistenti as $idx => $passo): ?>
+                                <!-- Passo esistente -->
+                                <div class="existing-step-row">
+                                    <div class="step-num"><?php echo $idx + 1; ?></div>
+                                    <div class="step-name"><?php echo htmlspecialchars($passo['titolo']); ?></div>
+                                    <div class="step-duration"><?php echo $passo['durata']; ?> min</div>
+                                </div>
+
+                                <!-- Slot DOPO questo passo (= prima del prossimo) -->
+                                <?php $posizioneDopoQui = $idx + 2; ?>
+                                <button type="button" class="insert-slot" data-pos="<?php echo $posizioneDopoQui; ?>" onclick="selezionaPosizione(<?php echo $posizioneDopoQui; ?>, this)">
+                                    <div class="insert-slot-badge">+</div>
+                                    <div class="insert-slot-line"></div>
+                                    <span class="insert-slot-label">
+                                        <?php if ($idx + 1 < count($passi_esistenti)): ?>
+                                            Tra passo <?php echo $idx + 1; ?> e <?php echo $idx + 2; ?>
+                                        <?php else: ?>
+                                            Dopo il passo <?php echo $idx + 1; ?>
+                                        <?php endif; ?>
+                                    </span>
+                                    <div class="insert-slot-line"></div>
+                                </button>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+
+                        <!-- Slot "in fondo" (default) -->
+                        <button type="button" class="append-slot active" id="appendSlot" onclick="selezionaFondo(this)">
+                            <div class="append-slot-icon">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                            </div>
+                            <span class="append-slot-label">
+                                <?php echo empty($passi_esistenti) ? 'Primo passo della ricetta' : 'In fondo alla ricetta'; ?>
+                            </span>
+                            <span class="append-slot-sub">Predefinito</span>
+                        </button>
+
+                    </div>
+                </div>
+            </div>
 
             <!-- Info base -->
             <div class="card" style="margin-bottom:18px;">
@@ -231,14 +424,48 @@ $titolo_ricetta = $stmt2->get_result()->fetch_assoc()['titolo'] ?? 'la tua ricet
 
 <script>
     const ingredienti = <?php echo json_encode($lista_ingredienti); ?>;
-    let ingCounter = 0;
+
+    /* ── Selettore posizione ── */
+    function selezionaPosizione(pos, slotEl) {
+        // Deseleziona tutto
+        document.querySelectorAll('.insert-slot').forEach(s => s.classList.remove('active'));
+        document.getElementById('appendSlot').classList.remove('active');
+        // Attiva lo slot cliccato
+        slotEl.classList.add('active');
+        // Imposta il valore hidden
+        document.getElementById('inputPosizione').value = pos;
+    }
+
+    function selezionaFondo(slotEl) {
+        document.querySelectorAll('.insert-slot').forEach(s => s.classList.remove('active'));
+        slotEl.classList.add('active');
+        // Valore vuoto = in fondo (il controller gestisce null)
+        document.getElementById('inputPosizione').value = '';
+    }
+
+    /* Mostra tutti gli slot al hover sulla lista */
+    document.getElementById('positionList').addEventListener('mouseenter', function() {
+        document.querySelectorAll('.insert-slot:not(.active)').forEach(s => {
+            s.style.height = '44px';
+            s.style.paddingTop = '10px';
+            s.style.paddingBottom = '10px';
+        });
+    });
+    document.getElementById('positionList').addEventListener('mouseleave', function() {
+        document.querySelectorAll('.insert-slot:not(.active)').forEach(s => {
+            s.style.height = '';
+            s.style.paddingTop = '';
+            s.style.paddingBottom = '';
+        });
+    });
+
+    /* ── Ingredienti ── */
     function buildSelect(name){
         let html=`<select name="${name}"><option value="">Scegli ingrediente</option>`;
         ingredienti.forEach(i=>{html+=`<option value="${i.id}">${i.nome}</option>`;});
         return html+`</select>`;
     }
     function aggiungiIngrediente(){
-        ingCounter++;
         const c=document.getElementById('ingredienti-container');
         const r=document.createElement('div');
         r.className='ingrediente-row';
