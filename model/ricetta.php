@@ -216,7 +216,7 @@ function getListaRicetteUtente($conn, $id_utente) {
  */
 function getTutteLeRicetteDB($conn) {
     $ricette = [];
-    $sql = "SELECT r.*, u.nome AS nome_autore, m.urlMedia AS url_copertina 
+    $sql = "SELECT r.*, u.username AS nome_autore, m.urlMedia AS url_copertina 
             FROM ricette r
             JOIN utenti u ON r.idCreatore = u.id
             LEFT JOIN mediaRicette m ON r.id = m.idRicetta AND m.isCopertina = 1
