@@ -8,7 +8,7 @@ require_once __DIR__ . '/../model/ricetta.php';
 require_once __DIR__ . '/../model/passo.php';
 
 // --- SICUREZZA: solo utenti loggati ---
-if (!isset($_SESSION['id_utente'])) {
+if (!isset($_SESSION['user_id'])) {
     header('Location: ../view/login.php');
     exit;
 }
@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$id_utente = (int)$_SESSION['id_utente'];
+$id_utente = (int)$_SESSION['user_id'];
 
 // ============================================================
 // 1. RACCOLTA DATI PRINCIPALI DELLA RICETTA
