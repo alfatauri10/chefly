@@ -13,7 +13,6 @@ $tutteLeRicette = getTutteLeRicetteDB($conn);
     <title>Chefly — Scopri le ricette della community</title>
     <link rel="stylesheet" href="css/chefly.css">
     <style>
-        /* Animazioni entry card */
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(16px); }
             to   { opacity: 1; transform: translateY(0); }
@@ -78,7 +77,8 @@ $tutteLeRicette = getTutteLeRicetteDB($conn);
         <?php else: ?>
             <div class="masonry-grid">
                 <?php foreach ($tutteLeRicette as $ricetta): ?>
-                    <a class="recipe-card--grid" href="#">
+                    <!-- FIX: href ora punta alla pagina ricetta con l'ID -->
+                    <a class="recipe-card--grid" href="/view/ricetta.php?id=<?php echo $ricetta['id']; ?>">
 
                         <?php if (!empty($ricetta['url_copertina'])): ?>
                             <img class="card-cover"
