@@ -790,7 +790,7 @@ $stmt_timer->close();
 <!-- STICKY MOBILE CTA -->
 <div class="sticky-cta">
     <?php if (!empty($passi)): ?>
-        <a href="#passi" class="btn-cook" style="flex:1;justify-content:center;" onclick="scrollToCook(event)">
+        <a href="/view/eseguiRicetta.php?id=<?= $id_ricetta ?>" class="btn-cook" style="flex:1;justify-content:center;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="10 8 16 12 10 16 10 8"/></svg>
             Inizia a cucinare
         </a>
