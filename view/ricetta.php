@@ -652,7 +652,7 @@ $stmt_timer->close();
             <!-- CTA -->
             <div class="recipe-cta-row">
                 <?php if (!empty($passi)): ?>
-                    <a href="#/view/eseguiRicetta.php?id=<?= $id_ricetta ?>" class="btn-cook">
+                    <a href="/view/eseguiRicetta.php?id=<?= $id_ricetta ?>" class="btn-cook">
                         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
                         Inizia a cucinare
                     </a>
