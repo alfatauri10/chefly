@@ -15,17 +15,15 @@ if (!$ricetta) { header("Location: ../index.php"); exit(); }
 $passi = getListaPassiByIdRicetta($conn, $id_ricetta);
 if (empty($passi)) { header("Location: /view/ricetta.php?id=" . $id_ricetta); exit(); }
 
-// Timer personalizzato: utente loggato → suoi colori, altrimenti default
-$id_utente = $_SESSION['user_id'] ?? null;
-if ($id_utente) {
-    $timer = getTimerByUtente($conn, $id_utente);
-} else {
-    $timer = ['coloreSfondo' => '#FFFFFF', 'coloreLancetta' => '#1A1008', 'coloreNumeri' => '#1A1008'];
-}
+// ── FIX: il timer mostrato durante la cottura è sempre quello dell'AUTORE della ricetta,
+//         non dell'utente loggato. Questo garantisce coerenza con ricetta.php.
+$timer = getTimerByUtente($conn, $ricetta['idCreatore']);
 
 // Progresso salvato (solo per utenti loggati)
-$progresso = null;
+$id_utente    = $_SESSION['user_id'] ?? null;
+$progresso    = null;
 $passo_ripresa = null;
+
 if ($id_utente) {
     $sql_prog = "SELECT re.id, re.idUltimoPasso, re.isCompletata
                  FROM ricetteEseguite re
@@ -37,18 +35,17 @@ if ($id_utente) {
     $progresso = $stmt_prog->get_result()->fetch_assoc();
     $stmt_prog->close();
 
-    // Trova l'indice del passo di ripresa (0-based)
     if ($progresso && !$progresso['isCompletata'] && $progresso['idUltimoPasso']) {
         foreach ($passi as $idx => $p) {
-            if ($p['id'] === (int)$progresso['idUltimoPasso']) {
-                $passo_ripresa = $idx; // potremmo riprendere dal successivo
+            if ((int)$p['id'] === (int)$progresso['idUltimoPasso']) {
+                $passo_ripresa = $idx;
                 break;
             }
         }
     }
 }
 
-// Autore e media
+// Autore
 $sql_autore = "SELECT username FROM utenti WHERE id = ?";
 $stmt_a = $conn->prepare($sql_autore);
 $stmt_a->bind_param("i", $ricetta['idCreatore']);
@@ -56,17 +53,10 @@ $stmt_a->execute();
 $autore = $stmt_a->get_result()->fetch_assoc();
 $stmt_a->close();
 
-$sql_cop = "SELECT urlMedia FROM mediaRicette WHERE idRicetta = ? AND isCopertina = 1 LIMIT 1";
-$stmt_cop = $conn->prepare($sql_cop);
-$stmt_cop->bind_param("i", $id_ricetta);
-$stmt_cop->execute();
-$copertina = $stmt_cop->get_result()->fetch_assoc();
-$stmt_cop->close();
-
 $durata_totale = array_sum(array_column($passi, 'durata'));
 $num_passi     = count($passi);
 
-// Colori timer per CSS inline
+// Colori timer (dell'autore) per CSS inline
 $c_sfondo   = htmlspecialchars($timer['coloreSfondo']);
 $c_lancetta = htmlspecialchars($timer['coloreLancetta']);
 $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
@@ -80,7 +70,7 @@ $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
     <link rel="stylesheet" href="../css/chefly.css">
     <style>
         /* ══════════════════════════════════════════════════
-           VARIABILI TIMER (colori personalizzati utente)
+           VARIABILI TIMER (colori dell'autore della ricetta)
         ══════════════════════════════════════════════════ */
         :root {
             --timer-sfondo:   <?php echo $c_sfondo; ?>;
@@ -139,7 +129,6 @@ $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
         }
         .cook-recipe-author { font-size: .72rem; color: rgba(245,240,232,.5); }
 
-        /* Progress bar globale */
         .cook-progress-wrap { flex-shrink: 0; display: flex; align-items: center; gap: 10px; }
         .cook-step-count { font-size: .72rem; font-weight: 700; color: #C4622D; white-space: nowrap; }
         .cook-progress-track {
@@ -221,9 +210,7 @@ $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
             gap: 12px;
             padding: 10px 20px;
             cursor: pointer;
-            border-radius: 0;
             transition: background .15s;
-            position: relative;
         }
         .sidebar-step:hover { background: rgba(255,255,255,.05); }
         .sidebar-step.active { background: rgba(196,98,45,.15); }
@@ -284,9 +271,7 @@ $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
             text-transform: uppercase; letter-spacing: 2px;
             padding: 4px 14px; border-radius: 20px;
         }
-        .passo-num-of {
-            font-size: .72rem; color: rgba(245,240,232,.4);
-        }
+        .passo-num-of { font-size: .72rem; color: rgba(245,240,232,.4); }
 
         .passo-titolo {
             font-family: 'Playfair Display', serif;
@@ -297,7 +282,6 @@ $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
             margin-bottom: 18px;
         }
 
-        /* Chips */
         .passo-chips {
             display: flex; flex-wrap: wrap; gap: 8px;
             margin-bottom: 28px;
@@ -312,7 +296,6 @@ $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
         .pchip--rest { background: rgba(41,128,185,.15); color: #74B9E8; border: 1px solid rgba(41,128,185,.2); }
         .pchip--tech { background: rgba(255,255,255,.06); color: rgba(245,240,232,.5); border: 1px solid rgba(255,255,255,.1); }
 
-        /* Descrizione */
         .passo-desc {
             font-size: 1.02rem;
             color: rgba(245,240,232,.85);
@@ -320,7 +303,6 @@ $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
             margin-bottom: 32px;
         }
 
-        /* Ingredienti */
         .passo-ingredients-section { margin-bottom: 28px; }
         .section-micro-label {
             font-size: .65rem; font-weight: 800;
@@ -339,7 +321,6 @@ $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
         }
         .ing-pill em { font-style: normal; color: #C4622D; font-weight: 700; margin-left: 4px; }
 
-        /* Foto passo */
         .passo-media-section { margin-bottom: 28px; }
         .passo-media-grid {
             display: grid;
@@ -355,7 +336,7 @@ $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
         .passo-media-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
         /* ══════════════════════════════════════════════════
-           TIMER — usa variabili CSS dell'utente
+           TIMER — usa variabili CSS (colori autore)
         ══════════════════════════════════════════════════ */
         .timer-section-cook {
             margin-bottom: 32px;
@@ -371,8 +352,6 @@ $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
             margin-bottom: 16px;
         }
 
-        /* Chefly Timer (override per dark bg) */
-        .chefly-timer {}
         .ct-inner { display: flex; align-items: center; gap: 24px; }
         .ct-clock-face {
             position: relative;
@@ -515,7 +494,6 @@ $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
         }
         .btn-nav-finish:hover { opacity: .9; }
 
-        /* Saving indicator */
         .save-indicator {
             font-size: .68rem; color: rgba(245,240,232,.3);
             display: flex; align-items: center; gap: 5px;
@@ -524,10 +502,7 @@ $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
         }
         .save-indicator.saving { color: #E87A40; }
         .save-indicator.saved  { color: #27ae60; }
-        .save-dot {
-            width: 6px; height: 6px; border-radius: 50%;
-            background: currentColor;
-        }
+        .save-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 
         /* ══════════════════════════════════════════════════
            LIGHTBOX
@@ -595,7 +570,6 @@ $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
     </header>
 
     <?php if ($passo_ripresa !== null && $passo_ripresa > 0): ?>
-        <!-- ── BANNER RIPRESA ── -->
         <div class="resume-banner" id="resumeBanner">
             <div class="resume-banner-icon">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="10 8 16 12 10 16 10 8"/><circle cx="12" cy="12" r="10"/></svg>
@@ -627,9 +601,8 @@ $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
             <?php endforeach; ?>
         </aside>
 
-        <!-- Main: area contenuto passo / completamento -->
+        <!-- Main -->
         <main class="cook-main" id="cookMain">
-            <!-- I passi vengono mostrati/nascosti via JS -->
             <?php foreach ($passi as $idx => $p): ?>
                 <div class="passo-view" id="pv-<?php echo $idx; ?>" style="<?php echo $idx !== 0 ? 'display:none;' : ''; ?>">
 
@@ -640,7 +613,6 @@ $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
 
                     <h1 class="passo-titolo"><?php echo htmlspecialchars($p['titolo']); ?></h1>
 
-                    <!-- Chips tempi/tecnica -->
                     <div class="passo-chips">
                         <?php if (!empty($p['durata'])): ?>
                             <span class="pchip pchip--time">
@@ -659,7 +631,6 @@ $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
                         <?php endif; ?>
                     </div>
 
-                    <!-- Timer -->
                     <?php if (!empty($p['durata'])): ?>
                         <div class="timer-section-cook">
                             <div class="timer-section-label">Timer</div>
@@ -670,10 +641,8 @@ $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
                         </div>
                     <?php endif; ?>
 
-                    <!-- Descrizione -->
                     <p class="passo-desc"><?php echo nl2br(htmlspecialchars($p['descrizione'])); ?></p>
 
-                    <!-- Ingredienti -->
                     <?php if (!empty($p['ingredienti'])): ?>
                         <div class="passo-ingredients-section">
                             <div class="section-micro-label">Ingredienti per questo passo</div>
@@ -681,16 +650,13 @@ $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
                                 <?php foreach ($p['ingredienti'] as $ing): ?>
                                     <span class="ing-pill">
                                         <?php echo htmlspecialchars($ing['nome']); ?>
-                                        <?php if (!empty($ing['dose'])): ?>
-                                            <em><?php echo htmlspecialchars($ing['dose']); ?></em>
-                                        <?php endif; ?>
+                                        <?php if (!empty($ing['dose'])): ?><em><?php echo htmlspecialchars($ing['dose']); ?></em><?php endif; ?>
                                     </span>
                                 <?php endforeach; ?>
                             </div>
                         </div>
                     <?php endif; ?>
 
-                    <!-- Foto passo -->
                     <?php if (!empty($p['media'])): ?>
                         <div class="passo-media-section">
                             <div class="section-micro-label">Foto del passo</div>
@@ -707,7 +673,7 @@ $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
                 </div>
             <?php endforeach; ?>
 
-            <!-- Schermata completamento (nascosta finché non finisce) -->
+            <!-- Schermata completamento -->
             <div class="complete-view" id="completeView" style="display:none;">
                 <div class="complete-icon">
                     <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#FFF" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -745,7 +711,7 @@ $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
                 <span id="saveLabel">—</span>
             <?php else: ?>
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                Accedi per salvare il progresso
+                Accedi per salvare
             <?php endif; ?>
         </div>
 
@@ -755,60 +721,44 @@ $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
         </button>
     </nav>
 
-</div><!-- .cook-shell -->
+</div>
 
-<!-- TIMER JS -->
 <script src="../js/timer.js"></script>
 
 <script>
-    // ══════════════════════════════════════════════════════
-    // DATI PHP → JS
-    // ══════════════════════════════════════════════════════
-    const PASSI = <?php echo json_encode(array_map(fn($p) => [
-        'id'    => $p['id'],
-        'titolo'=> $p['titolo'],
-        'durata'=> $p['durata'],
-    ], $passi)); ?>;
+    const PASSI = <?php
+            $passi_js = array_map(function($p) {
+                return ['id' => $p['id'], 'titolo' => $p['titolo'], 'durata' => $p['durata']];
+            }, $passi);
+            echo json_encode($passi_js);
+            ?>;
     const NUM_PASSI    = <?php echo $num_passi; ?>;
     const ID_RICETTA   = <?php echo $id_ricetta; ?>;
     const IS_LOGGED_IN = <?php echo $id_utente ? 'true' : 'false'; ?>;
 
     let currentStep = 0;
 
-    // ══════════════════════════════════════════════════════
-    // NAVIGAZIONE
-    // ══════════════════════════════════════════════════════
-    function showStep(idx, direction) {
+    function showStep(idx) {
         if (idx < 0 || idx >= NUM_PASSI) return;
 
-        // Nascondi passo corrente
         const old = document.getElementById('pv-' + currentStep);
         if (old) old.style.display = 'none';
         document.getElementById('completeView').style.display = 'none';
 
-        // Sidebar: aggiorna stato
         const oldSS = document.getElementById('ss-' + currentStep);
-        if (oldSS) {
-            oldSS.classList.remove('active');
-            if (idx > currentStep || (direction === 'fwd' && idx >= currentStep)) {
-                oldSS.classList.add('done');
-            }
-        }
+        if (oldSS) oldSS.classList.remove('active');
 
         currentStep = idx;
 
-        // Mostra nuovo passo
         const el = document.getElementById('pv-' + currentStep);
         if (el) {
             el.style.display = 'flex';
             el.style.flexDirection = 'column';
-            // Forza re-animate
             el.style.animation = 'none';
-            el.offsetHeight; // reflow
+            el.offsetHeight;
             el.style.animation = '';
         }
 
-        // Sidebar: attiva
         const newSS = document.getElementById('ss-' + currentStep);
         if (newSS) {
             newSS.classList.add('active');
@@ -816,12 +766,10 @@ $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
             newSS.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
         }
 
-        // Progress bar
         const pct = Math.round(((currentStep + 1) / NUM_PASSI) * 100);
         document.getElementById('progressFill').style.width = pct + '%';
         document.getElementById('stepCount').textContent = (currentStep + 1) + ' / ' + NUM_PASSI;
 
-        // Bottoni
         document.getElementById('btnPrev').disabled = (currentStep === 0);
         const btnNext = document.getElementById('btnNext');
         if (currentStep === NUM_PASSI - 1) {
@@ -832,11 +780,9 @@ $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
             btnNext.innerHTML = 'Avanti <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
         }
 
-        // Scrolla in cima al contenuto
         const main = document.getElementById('cookMain');
         if (main) main.scrollTop = 0;
 
-        // Salva progresso
         salvaProgresso(false);
     }
 
@@ -844,38 +790,29 @@ $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
         if (currentStep === NUM_PASSI - 1) {
             finisciRicetta();
         } else {
-            // Segna vecchio come done nella sidebar
             const oldSS = document.getElementById('ss-' + currentStep);
             if (oldSS) oldSS.classList.add('done');
-            showStep(currentStep + 1, 'fwd');
+            showStep(currentStep + 1);
         }
     }
 
     function prevStep() {
         if (currentStep > 0) {
-            // Rimuovi done dal corrente nella sidebar
             const curSS = document.getElementById('ss-' + currentStep);
             if (curSS) curSS.classList.remove('done');
-            showStep(currentStep - 1, 'bwd');
+            showStep(currentStep - 1);
         }
     }
 
     function jumpToStep(idx) {
-        // Marca tutti i precedenti come done
         for (let i = 0; i < idx; i++) {
             const ss = document.getElementById('ss-' + i);
             if (ss) { ss.classList.remove('active'); ss.classList.add('done'); }
-            const sn = document.getElementById('ssn-' + i);
-            if (sn) sn.style.color = '';
         }
         showStep(idx);
     }
 
-    // ══════════════════════════════════════════════════════
-    // COMPLETAMENTO
-    // ══════════════════════════════════════════════════════
     function finisciRicetta() {
-        // Nascondi tutto
         for (let i = 0; i < NUM_PASSI; i++) {
             const el = document.getElementById('pv-' + i);
             if (el) el.style.display = 'none';
@@ -884,21 +821,12 @@ $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
         }
         document.getElementById('completeView').style.display = 'flex';
         document.getElementById('completeView').style.flexDirection = 'column';
-
-        // Nascondi bottombar
         document.getElementById('cookBottombar').style.display = 'none';
-
-        // Progress: 100%
         document.getElementById('progressFill').style.width = '100%';
         document.getElementById('stepCount').textContent = '✓ Completata';
-
-        // Salva come completata
         salvaProgresso(true);
     }
 
-    // ══════════════════════════════════════════════════════
-    // SALVATAGGIO PROGRESSO (AJAX)
-    // ══════════════════════════════════════════════════════
     let saveTimeout = null;
     function salvaProgresso(completata) {
         if (!IS_LOGGED_IN) return;
@@ -935,17 +863,11 @@ $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
         }, 600);
     }
 
-    // ══════════════════════════════════════════════════════
-    // BANNER RIPRESA
-    // ══════════════════════════════════════════════════════
     function dismissResumeBanner() {
         const b = document.getElementById('resumeBanner');
         if (b) b.style.display = 'none';
     }
 
-    // ══════════════════════════════════════════════════════
-    // LIGHTBOX
-    // ══════════════════════════════════════════════════════
     function openLightbox(src) {
         document.getElementById('lightboxImg').src = src;
         document.getElementById('lightbox').classList.add('open');
@@ -955,17 +877,11 @@ $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
         document.getElementById('lightbox').classList.remove('open');
         document.body.style.overflow = '';
     }
-    document.getElementById('lightbox').addEventListener('click', closeLightbox);
     document.addEventListener('keydown', e => {
         if (e.key === 'Escape') closeLightbox();
         if (e.key === 'ArrowRight') nextStep();
         if (e.key === 'ArrowLeft')  prevStep();
     });
-
-    // ══════════════════════════════════════════════════════
-    // INIZIALIZZAZIONE
-    // ══════════════════════════════════════════════════════
-    // (CheflyTimer.init() viene già chiamato da timer.js su DOMContentLoaded)
 </script>
 
 </body>
