@@ -15,9 +15,13 @@ if (!$ricetta) { header("Location: ../index.php"); exit(); }
 $passi = getListaPassiByIdRicetta($conn, $id_ricetta);
 if (empty($passi)) { header("Location: /view/ricetta.php?id=" . $id_ricetta); exit(); }
 
-// ── FIX: il timer mostrato durante la cottura è sempre quello dell'AUTORE della ricetta,
-//         non dell'utente loggato. Questo garantisce coerenza con ricetta.php.
-$timer = getTimerByUtente($conn, $ricetta['idCreatore']);
+// Timer personale: usa i colori dell'utente loggato.
+// Per gli ospiti non loggati, fallback ai colori di default (timer id=1).
+if ($id_utente) {
+    $timer = getTimerByUtente($conn, $id_utente);
+} else {
+    $timer = ['coloreSfondo' => '#FFFFFF', 'coloreLancetta' => '#000000', 'coloreNumeri' => '#000000'];
+}
 
 // Progresso salvato (solo per utenti loggati)
 $id_utente    = $_SESSION['user_id'] ?? null;
@@ -56,7 +60,7 @@ $stmt_a->close();
 $durata_totale = array_sum(array_column($passi, 'durata'));
 $num_passi     = count($passi);
 
-// Colori timer (dell'autore) per CSS inline
+// Colori timer (dell'utente loggato) per CSS inline
 $c_sfondo   = htmlspecialchars($timer['coloreSfondo']);
 $c_lancetta = htmlspecialchars($timer['coloreLancetta']);
 $c_numeri   = htmlspecialchars($timer['coloreNumeri']);
