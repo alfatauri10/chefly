@@ -467,7 +467,7 @@ require_once '../controller/ricercaController.php';
                     <?php endif; ?>
                 </h1>
 
-                <form action="/ricerca.php" method="GET" class="main-search-form" id="mainSearchForm" autocomplete="off">
+                <form action="/view/ricerca.php" method="GET" class="main-search-form" id="mainSearchForm" autocomplete="off">
                     <!-- Preserva filtri attivi nei campi nascosti -->
                     <?php foreach ($filtri as $key => $val): ?>
                         <?php if (!empty($val)): ?>
@@ -537,7 +537,7 @@ require_once '../controller/ricercaController.php';
                         <?php endif; ?>
                     </span>
                         <?php if ($ha_filtri_attivi): ?>
-                            <a href="/ricerca.php<?php echo $q ? '?q=' . urlencode($q) : ''; ?>"
+                            <a href="/view/ricerca.php<?php echo $q ? '?q=' . urlencode($q) : ''; ?>"
                                class="btn-reset-filters">Reimposta</a>
                         <?php endif; ?>
                     </div>
@@ -699,7 +699,7 @@ require_once '../controller/ricercaController.php';
                                 Nessuna ricetta corrisponde ai filtri selezionati.
                             <?php endif; ?>
                         </p>
-                        <a href="/ricerca.php" class="btn btn-ghost">Mostra tutte le ricette</a>
+                        <a href="/view/ricerca.php" class="btn btn-ghost">Mostra tutte le ricette</a>
                     </div>
                 <?php else: ?>
                     <div class="results-grid">
@@ -759,7 +759,7 @@ require_once '../controller/ricercaController.php';
                             function buildPageUrl($pagina, $q, $filtri) {
                                 $p = array_filter(['q' => $q] + $filtri);
                                 $p['pagina'] = $pagina;
-                                return '/ricerca.php?' . http_build_query($p);
+                                return '/view/ricerca.php?' . http_build_query($p);
                             }
                             ?>
 
@@ -836,7 +836,7 @@ require_once '../controller/ricercaController.php';
                 .then(data => {
                     if (!data.length) { closeAutocomplete(); return; }
                     dropdown.innerHTML = data.map(item => `
-                <a class="autocomplete-item" href="/ricerca.php?q=${encodeURIComponent(item.titolo)}">
+                <a class="autocomplete-item" href="/view/ricerca.php?q=${encodeURIComponent(item.titolo)}">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                     <span class="autocomplete-item-title">${escHtml(item.titolo)}</span>
                     <span class="autocomplete-item-badge badge badge--${item.difficolta.toLowerCase()}">${capitalize(item.difficolta)}</span>
@@ -918,5 +918,5 @@ function buildFilterUrl($q, $filtri, $chiave, $valore) {
         if (!empty($v) && $k !== $chiave) $p[$k] = $v;
     }
     if ($valore !== '') $p[$chiave] = $valore;
-    return '/ricerca.php' . ($p ? '?' . http_build_query($p) : '');
+    return '/view/ricerca.php' . ($p ? '?' . http_build_query($p) : '');
 }
