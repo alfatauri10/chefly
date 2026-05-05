@@ -11,7 +11,7 @@
 
     <!-- CENTRO: Search bar (desktop) -->
     <div class="header-center">
-        <form action="/ricerca.php" method="GET" class="search-form">
+        <form action="/view/ricerca.php" method="GET" class="search-form">
             <div class="search-wrapper">
                 <input type="text" name="q" placeholder="Cerca ricette, ingredienti..." class="search-bar">
                 <button type="submit" class="search-icon-btn" aria-label="Cerca">
