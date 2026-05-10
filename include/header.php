@@ -39,6 +39,15 @@
                      id="profileToggle"
                      alt="Profilo">
                 <div class="dropdown-menu" id="dropdownMenu">
+                    <!-- Profilo pubblico -->
+                    <a href="/view/profilo.php?id=<?php echo (int)$_SESSION['user_id']; ?>" class="dropdown-item">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        Profilo pubblico
+                    </a>
+                    <!-- Il mio ristorante -->
                     <a href="/view/ilMioRistorante.php" class="dropdown-item">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/>
@@ -46,6 +55,7 @@
                         </svg>
                         Il mio ristorante
                     </a>
+                    <!-- Logout -->
                     <a href="/controller/logOutController.php" class="dropdown-item">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
@@ -98,13 +108,12 @@
         color: #1A1008;
         text-transform: uppercase;
         line-height: 1;
-        /* Nasconde su schermi molto piccoli per non sovraccaricare */
         transition: opacity 0.2s;
     }
 
     /* ── MOBILE SEARCH BUTTON ───────────────────────────────────── */
     .mobile-search-btn {
-        display: none; /* visibile solo mobile */
+        display: none;
         align-items: center;
         justify-content: center;
         width: 38px;
@@ -121,7 +130,7 @@
     /* ── MOBILE SEARCH BAR ──────────────────────────────────────── */
     .mobile-search-bar {
         position: fixed;
-        top: 90px; /* altezza header */
+        top: 90px;
         left: 0;
         right: 0;
         background: #fff;
@@ -173,27 +182,19 @@
 
     /* ── RESPONSIVE HEADER ──────────────────────────────────────── */
     @media (max-width: 900px) {
-        /* Riduci gap laterali */
         .main-header { padding: 0 1.5rem; }
-        /* Logo leggermente più piccolo */
         .header-logo { height: 56px; }
     }
 
     @media (max-width: 680px) {
-        /* Layout: logo | [spazio] | icone */
         .main-header {
             grid-template-columns: auto 1fr auto;
             padding: 0 1rem;
         }
-        /* Nascondi search bar desktop */
         .header-center { display: none; }
-        /* Mostra bottone search mobile */
         .mobile-search-btn { display: flex; }
-        /* Logo ancora più compatto */
         .header-logo { height: 46px; }
-        /* Riduci spaziatura destra */
         .header-right { gap: 10px; }
-        /* Nasconde i bottoni testo su schermi molto piccoli */
         .login-link { display: none; }
         .signup-button {
             padding: 8px 14px;
@@ -203,7 +204,6 @@
     }
 
     @media (max-width: 400px) {
-        /* Su schermi minuscoli togli anche il nome brand */
         .header-brand-name { display: none; }
         .header-logo { height: 42px; }
     }
@@ -227,7 +227,6 @@
             searchBar.classList.remove('open');
         });
 
-        // Chiudi premendo Escape
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' && searchBar.classList.contains('open')) {
                 searchBar.classList.remove('open');

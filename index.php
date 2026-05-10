@@ -29,6 +29,25 @@ $tutteLeRicette = getTutteLeRicetteDB($conn);
         .empty-state { text-align:center; padding:80px 20px; color:var(--muted); }
         .empty-state h3 { font-family:var(--font-serif); font-size:1.4rem; margin-bottom:10px; }
         .empty-state p  { font-size:.9rem; }
+
+        /* Link autore nella card */
+        .card-author-link {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            text-decoration: none;
+            border-radius: 6px;
+            padding: 2px 4px;
+            margin-left: -4px;
+            transition: background .15s;
+        }
+        .card-author-link:hover {
+            background: var(--cream);
+        }
+        .card-author-link:hover .author-name {
+            color: var(--caramel);
+        }
+        .author-name { transition: color .15s; }
     </style>
 </head>
 <body>
@@ -77,7 +96,6 @@ $tutteLeRicette = getTutteLeRicetteDB($conn);
         <?php else: ?>
             <div class="masonry-grid">
                 <?php foreach ($tutteLeRicette as $ricetta): ?>
-                    <!-- FIX: href ora punta alla pagina ricetta con l'ID -->
                     <a class="recipe-card--grid" href="/view/ricetta.php?id=<?php echo $ricetta['id']; ?>">
 
                         <?php if (!empty($ricetta['url_copertina'])): ?>
@@ -106,10 +124,13 @@ $tutteLeRicette = getTutteLeRicetteDB($conn);
                             <?php endif; ?>
 
                             <div class="card-footer-row">
-                                <div style="display:flex;align-items:center;gap:7px;">
+                                <!-- Autore cliccabile — stopPropagation evita di aprire la ricetta -->
+                                <a class="card-author-link"
+                                   href="/view/profilo.php?id=<?php echo (int)$ricetta['idCreatore']; ?>"
+                                   onclick="event.stopPropagation();">
                                     <div class="author-avatar"><?php echo mb_substr($ricetta['nome_autore'], 0, 2); ?></div>
                                     <span class="author-name">@<?php echo htmlspecialchars($ricetta['nome_autore']); ?></span>
-                                </div>
+                                </a>
                                 <span class="card-date"><?php echo date('d M Y', strtotime($ricetta['dataCreazione'])); ?></span>
                             </div>
                         </div>

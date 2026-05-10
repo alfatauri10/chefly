@@ -83,7 +83,6 @@ $stmt_timer->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($ricetta['titolo']); ?> — Chefly</title>
     <link rel="stylesheet" href="../css/chefly.css">
-    <!-- Timer JS -->
     <style>
         /* ── HERO COPERTINA ── */
         .recipe-hero {
@@ -171,11 +170,23 @@ $stmt_timer->close();
         }
         .meta-chip svg { flex-shrink: 0; color: var(--caramel); }
 
-        /* Autore */
+        /* Autore — ora è un link */
         .author-row {
             display: flex;
             align-items: center;
             gap: 12px;
+            text-decoration: none;
+            width: fit-content;
+            border-radius: 10px;
+            padding: 6px 10px 6px 6px;
+            margin-left: -6px;
+            transition: background .15s;
+        }
+        .author-row:hover {
+            background: var(--cream);
+        }
+        .author-row:hover .author-username {
+            color: var(--caramel);
         }
         .author-avatar-img {
             width: 40px;
@@ -185,11 +196,11 @@ $stmt_timer->close();
             border: 2px solid var(--border);
             flex-shrink: 0;
         }
-        .author-info {}
         .author-username {
             font-size: .85rem;
             font-weight: 700;
             color: var(--brown);
+            transition: color .15s;
         }
         .author-date {
             font-size: .72rem;
@@ -245,9 +256,7 @@ $stmt_timer->close();
         .btn-save.saved svg { fill: var(--caramel); stroke: var(--caramel); }
 
         /* ── GALLERIA ── */
-        .gallery-section {
-            margin-bottom: 40px;
-        }
+        .gallery-section { margin-bottom: 40px; }
         .gallery-section-title {
             font-size: .72rem;
             font-weight: 700;
@@ -340,12 +349,10 @@ $stmt_timer->close();
             width: 2px;
             background: var(--border);
         }
-
         .passo-num-col {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 0;
             flex-shrink: 0;
         }
         .passo-circle {
@@ -363,7 +370,6 @@ $stmt_timer->close();
             flex-shrink: 0;
             box-shadow: 0 4px 14px rgba(26,16,8,.18);
         }
-
         .passo-content {
             background: var(--white);
             border: 1px solid var(--border);
@@ -371,7 +377,6 @@ $stmt_timer->close();
             overflow: hidden;
             padding-bottom: 4px;
         }
-
         .passo-content-header {
             padding: 18px 22px 14px;
             border-bottom: 1px solid var(--border-light);
@@ -383,11 +388,7 @@ $stmt_timer->close();
             color: var(--brown);
             margin-bottom: 8px;
         }
-        .passo-chips-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
+        .passo-chips-row { display: flex; flex-wrap: wrap; gap: 6px; }
         .pchip {
             display: inline-flex;
             align-items: center;
@@ -412,10 +413,7 @@ $stmt_timer->close();
             margin-bottom: 18px;
         }
 
-        /* Ingredienti del passo */
-        .passo-ingredients {
-            margin-bottom: 18px;
-        }
+        .passo-ingredients { margin-bottom: 18px; }
         .passo-ingredients-label {
             font-size: .68rem;
             font-weight: 700;
@@ -424,11 +422,7 @@ $stmt_timer->close();
             color: var(--muted);
             margin-bottom: 8px;
         }
-        .ingredients-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
+        .ingredients-list { display: flex; flex-wrap: wrap; gap: 6px; }
         .ing-pill {
             display: inline-flex;
             align-items: center;
@@ -441,14 +435,8 @@ $stmt_timer->close();
             color: var(--brown);
             font-weight: 500;
         }
-        .ing-pill em {
-            font-style: normal;
-            color: var(--caramel);
-            font-weight: 700;
-            margin-left: 3px;
-        }
+        .ing-pill em { font-style: normal; color: var(--caramel); font-weight: 700; margin-left: 3px; }
 
-        /* Foto passo */
         .passo-media-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
@@ -464,7 +452,6 @@ $stmt_timer->close();
         }
         .passo-media-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-        /* Timer widget nel passo */
         .timer-wrapper {
             margin-top: 16px;
             padding-top: 16px;
@@ -479,9 +466,9 @@ $stmt_timer->close();
             position: relative;
             width: 90px; height: 90px;
             border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
             background: <?php echo htmlspecialchars($timer_autore['coloreSfondo']); ?>;
             box-shadow: 0 4px 20px rgba(45,27,16,.10);
+            display: flex; align-items: center; justify-content: center;
             transition: box-shadow .3s;
         }
         .ct-clock-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
@@ -546,7 +533,7 @@ $stmt_timer->close();
             .passo-card { grid-template-columns: 38px 1fr; gap: 12px; }
             .passo-circle { width: 38px; height: 38px; font-size: .85rem; }
             .passo-card:not(:last-child)::before { left: 18px; }
-            .recipe-cta-row { display: none; } /* nascosto su mobile — usa sticky */
+            .recipe-cta-row { display: none; }
         }
     </style>
 </head>
@@ -599,37 +586,28 @@ $stmt_timer->close();
 
             <!-- Meta chips -->
             <div class="recipe-meta-row">
-                <!-- Difficoltà -->
                 <span class="meta-chip">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
                     <?php echo ucfirst($ricetta['difficolta']); ?>
                 </span>
-
-                <!-- Durata totale -->
                 <?php if ($durata_totale > 0): ?>
                     <span class="meta-chip">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                         <?php echo $durata_totale; ?> min
                     </span>
                 <?php endif; ?>
-
-                <!-- Nazionalità -->
                 <?php if ($nazionalita): ?>
                     <span class="meta-chip">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                         <?php echo htmlspecialchars($nazionalita['nome']); ?>
                     </span>
                 <?php endif; ?>
-
-                <!-- Tipologia -->
                 <?php if ($tipologia): ?>
                     <span class="meta-chip">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
                         <?php echo htmlspecialchars($tipologia['nome']); ?>
                     </span>
                 <?php endif; ?>
-
-                <!-- N° passi -->
                 <?php if (count($passi) > 0): ?>
                     <span class="meta-chip">
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
@@ -638,16 +616,16 @@ $stmt_timer->close();
                 <?php endif; ?>
             </div>
 
-            <!-- Autore -->
-            <div class="author-row">
+            <!-- ── AUTORE (ora è un link cliccabile) ── -->
+            <a class="author-row" href="/view/profilo.php?id=<?php echo (int)$ricetta['idCreatore']; ?>">
                 <img src="<?php echo htmlspecialchars($autore['urlFotoProfilo'] ?? '/img/fotoProfilo.jpg'); ?>"
                      alt="<?php echo htmlspecialchars($autore['username']); ?>"
                      class="author-avatar-img">
-                <div class="author-info">
+                <div>
                     <div class="author-username">@<?php echo htmlspecialchars($autore['username']); ?></div>
                     <div class="author-date"><?php echo date('d M Y', strtotime($ricetta['dataCreazione'])); ?></div>
                 </div>
-            </div>
+            </a>
 
             <!-- CTA -->
             <div class="recipe-cta-row">
@@ -704,12 +682,9 @@ $stmt_timer->close();
             <?php else: ?>
                 <?php foreach ($passi as $idx => $passo): ?>
                     <div class="passo-card" id="passo-<?php echo $passo['id']; ?>">
-                        <!-- Numero -->
                         <div class="passo-num-col">
                             <div class="passo-circle"><?php echo $idx + 1; ?></div>
                         </div>
-
-                        <!-- Contenuto -->
                         <div class="passo-content">
                             <div class="passo-content-header">
                                 <div class="passo-content-title"><?php echo htmlspecialchars($passo['titolo']); ?></div>
@@ -734,12 +709,8 @@ $stmt_timer->close();
                                     <?php endif; ?>
                                 </div>
                             </div>
-
                             <div class="passo-content-body">
-                                <!-- Descrizione -->
                                 <p class="passo-description"><?php echo nl2br(htmlspecialchars($passo['descrizione'])); ?></p>
-
-                                <!-- Ingredienti del passo -->
                                 <?php if (!empty($passo['ingredienti'])): ?>
                                     <div class="passo-ingredients">
                                         <p class="passo-ingredients-label">Ingredienti per questo passo</p>
@@ -755,8 +726,6 @@ $stmt_timer->close();
                                         </div>
                                     </div>
                                 <?php endif; ?>
-
-                                <!-- Foto del passo -->
                                 <?php if (!empty($passo['media'])): ?>
                                     <div class="passo-media-grid">
                                         <?php foreach ($passo['media'] as $m): ?>
@@ -766,8 +735,6 @@ $stmt_timer->close();
                                         <?php endforeach; ?>
                                     </div>
                                 <?php endif; ?>
-
-                                <!-- Timer (solo se ha durata) -->
                                 <?php if (!empty($passo['durata'])): ?>
                                     <div class="timer-wrapper">
                                         <div data-chefly-timer="<?php echo $passo['id']; ?>"
@@ -776,7 +743,6 @@ $stmt_timer->close();
                                         </div>
                                     </div>
                                 <?php endif; ?>
-
                             </div>
                         </div>
                     </div>
@@ -804,11 +770,8 @@ $stmt_timer->close();
 
 <?php include '../include/footer.php'; ?>
 
-<!-- TIMER JS (integrato) -->
 <script src="../js/timer.js"></script>
-
 <script>
-    /* ── Lightbox ── */
     function openLightbox(src) {
         document.getElementById('lightboxImg').src = src;
         document.getElementById('lightbox').classList.add('open');
@@ -820,25 +783,15 @@ $stmt_timer->close();
     }
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
 
-    /* ── Scroll to passi ── */
-    function scrollToCook(e) {
-        e.preventDefault();
-        document.getElementById('passi').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
-    /* ── Toggle Preferiti (AJAX) ── */
     let isSaved = <?php echo json_encode($is_preferita); ?>;
-
     function togglePreferita() {
         <?php if (!$id_utente): ?>
         window.location.href = '/view/login.php';
         return;
         <?php endif; ?>
-
         const url = isSaved
             ? '../controller/rimuoviPreferitaController.php'
             : '../controller/aggiungiPreferitaController.php';
-
         fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -846,7 +799,6 @@ $stmt_timer->close();
         }).then(r => r.json()).then(data => {
             if (data.success) {
                 isSaved = !isSaved;
-                // Aggiorna tutti i btn-save
                 document.querySelectorAll('.btn-save').forEach(btn => {
                     btn.classList.toggle('saved', isSaved);
                     const svg = btn.querySelector('svg');
